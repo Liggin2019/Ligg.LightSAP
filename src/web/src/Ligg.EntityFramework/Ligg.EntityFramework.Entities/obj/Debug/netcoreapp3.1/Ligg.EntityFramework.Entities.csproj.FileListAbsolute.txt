@@ -1,9 +1,0 @@
-D:\Doing\coding\coding-doing\arch\Ligg.Web\src-sharing\src\web\debug-lib\Ef\netcoreapp3.1\Ligg.EntityFramework.Entities.deps.json
-D:\Doing\coding\coding-doing\arch\Ligg.Web\src-sharing\src\web\debug-lib\Ef\netcoreapp3.1\Ligg.EntityFramework.Entities.dll
-D:\Doing\coding\coding-doing\arch\Ligg.Web\src-sharing\src\web\debug-lib\Ef\netcoreapp3.1\Ligg.EntityFramework.Entities.pdb
-D:\Doing\coding\coding-doing\arch\Ligg.Web\src-sharing\src\web\src\Ligg.EntityFramework\Ligg.EntityFramework.Entities\obj\Debug\netcoreapp3.1\Ligg.EntityFramework.Entities.csprojAssemblyReference.cache
-D:\Doing\coding\coding-doing\arch\Ligg.Web\src-sharing\src\web\src\Ligg.EntityFramework\Ligg.EntityFramework.Entities\obj\Debug\netcoreapp3.1\Ligg.EntityFramework.Entities.AssemblyInfoInputs.cache
-D:\Doing\coding\coding-doing\arch\Ligg.Web\src-sharing\src\web\src\Ligg.EntityFramework\Ligg.EntityFramework.Entities\obj\Debug\netcoreapp3.1\Ligg.EntityFramework.Entities.AssemblyInfo.cs
-D:\Doing\coding\coding-doing\arch\Ligg.Web\src-sharing\src\web\src\Ligg.EntityFramework\Ligg.EntityFramework.Entities\obj\Debug\netcoreapp3.1\Ligg.EntityFramework.Entities.csproj.CoreCompileInputs.cache
-D:\Doing\coding\coding-doing\arch\Ligg.Web\src-sharing\src\web\src\Ligg.EntityFramework\Ligg.EntityFramework.Entities\obj\Debug\netcoreapp3.1\Ligg.EntityFramework.Entities.dll
-D:\Doing\coding\coding-doing\arch\Ligg.Web\src-sharing\src\web\src\Ligg.EntityFramework\Ligg.EntityFramework.Entities\obj\Debug\netcoreapp3.1\Ligg.EntityFramework.Entities.pdb
