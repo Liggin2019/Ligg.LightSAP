@@ -1,0 +1,247 @@
+﻿@{
+    Layout = "~/Views/Shared/_SysPage.cshtml";
+    int configIndex = ViewBag.ConfigIndex;
+    var isOwner = ViewBag.IsOwner;
+    var isManager = ViewBag.IsManager;
+}
+
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        类别：<span id="type" col="Type"></span>
+                    </li>
+                    <li>
+                        状态：<span id="status" col="Status"></span>
+                    </li>
+                    <li>
+                        名称或描述：<input id="text" col="Text" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="toolbar" class="btn-group-sm">
+            @if (isManager)
+            {
+                <a id="btnAdd" class="btn btn-success" onclick="showAddEditDialog(true)"><i class="fa fa-plus"></i> 新增</a>
+                <a id="btnEdit" class="btn btn-primary disabled" onclick="showAddEditDialog(false)"><i class="fa fa-edit"></i> 修改</a>
+                <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteSelected()"><i class="fa fa-remove"></i> 删除</a>
+
+            }
+            <a id="btnDisplay" class="btn btn-primary disabled" onclick="showDisplayDialog()"><i class="fa fa-search"></i> 查看</a>
+            @if (isOwner)
+            {
+                <a id="btnGrantAsManager" class="btn btn-success" onclick="goToGrantAsManager()"><i class="fa fa-plus"></i> 授权管理者</a>
+            }
+            @if (isManager)
+            {
+                <a id="btnGrantAsProducer" class="btn btn-success" onclick="goToGrantAsProducor()"><i class="fa fa-plus"></i> 授权生产者</a>
+            }
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#type").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(CustConfigType).EnumToDictionaryJson())) });
+        $("#status").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(StatusType).EnumToDictionaryJson())) });
+
+        initGrid();
+        $("#gridTable").on("check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table", function () {
+            var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+            if ($('#btnDisplay')) {
+                $('#btnDisplay').toggleClass('disabled', selectedRows.length != 1);
+            }
+        });
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/sys/config/GetPagedManageDtosJson?id=")'+ @configIndex;
+        var configTypes = ys.getJson(@Html.Raw(typeof(CustConfigType).EnumToDictionaryJson()));
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            sortName: 'Type',
+            sortOrder: 'Asc',
+            columns: [
+                { checkbox: true, visible: true },
+
+                {
+                    field: 'Type', title: '类别', align: "left", width: '60px', sortable: true,
+
+                    formatter: function (value, item, index) {
+                        var key = item.Type;
+                        if (configTypes) {
+                            for (var i = 0; i < configTypes.length; i++) {
+                                if (configTypes[i].Key == key) {
+                                    if (i % 2 == 0) return '<span class="label label-success">' + configTypes[i].Value + '</span>';
+                                    else return '<span class="label label-primary">' + configTypes[i].Value + '</span>';
+                                }
+                            }
+                        }
+                        return '<span class="label label-warning">' + "Undifined" + '</span>';
+                    }
+
+                },
+                { field: 'Code', title: '编码', align: "left",  width: "80px",sortable: true },
+                { field: 'Name', title: '名称', align: "left", width: "180px" },
+                { field: 'OwnerAccount', title: '责任人', align: "left", width: "100px" },
+                { field: 'ManagerNum', title: '管理者', align: "left", width: "80px" },
+                { field: 'ProducerNum', title: '生产者', align: "left", width: "80px" },
+                { field: 'Description', title: '描述',align: "left"},
+                { field: 'Sequence', title: '排序码', width: '60px',sortable: true },
+                {
+                    field: 'Status', title: '状态', width: '40px', formatter: function (value, row, index) {
+                        if (row.Status == "@((int)StatusType.Enabled)") {
+                            return '<span class="badge badge-primary">' + "@StatusType.Enabled.GetDescription()" + '</span>';
+                        } else {
+                            return '<span class="badge badge-warning">' + "@StatusType.Disabled.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'ModificationTime', title: '最后修改时间', sortable: true, width: '150px',
+                    formatter: function (value, row, index)
+                    {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                { field: 'Id', title: 'Id', visible: true, width: '100px', },
+                {
+                    title: '操作',
+                    align: 'center',width: '10%',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-info btn-xs" href="#" onclick="goToItem(\'' + row.Id+'_' + row.Code +'_'+ row.Name + '\')"><i class="fa fa-list-ul"></i>配置子项</a>');
+                        return actions.join('');
+                    }
+                }
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showAddEditDialog(add) {
+        var id = '';
+        var type = -1;
+        if (add) {
+            type = $("#type_select").val();
+            if (type == -1) {
+                ys.alertError("请选择一个类别"); return;
+            }
+        }
+        else {
+            var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+            if (!ys.checkRowEdit(selectedRows)) {
+                return;
+            }
+            else {
+                id = selectedRows[0].Id;
+            }
+        }
+        ys.openDialog({
+            title: id == '' ? "新增配置":"修改配置" ,
+            content: '@Url.Content("~/sys/Config/AddEditModal")' + '?id=' + id + '&type=' + type + '&index=' +@configIndex ,
+            height: '480px',
+            callback: function (index, layero) {
+                var frame = window[layero.find('iframe')[0]['name']];
+                frame.saveForm(index);
+            }
+        });
+    }
+
+    function showDisplayDialog() {
+        var id = '';
+        var type = -1;
+        var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+        if (!ys.checkRowEdit(selectedRows)) {
+            return;
+        }
+        else {
+                id = selectedRows[0].Id;
+        }
+
+        ys.openDialog({
+            title: "查看配置" ,
+            content: '@Url.Content("~/sys/Config/AddEditModal")' + '?id=' + id + '&type=' + type + '&index=' +@configIndex ,
+            height: '480px',
+            btn: ['关闭'],
+            callback: function (index, layero) {
+                var frame = window[layero.find('iframe')[0]['name']];
+                frame.leaveForm(index);
+            }
+        });
+    }
+
+    function deleteSelected() {
+        var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+        if (ys.checkRowDelete(selectedRows)) {
+            ys.confirm("确认要删除选中的" + selectedRows.length + "条数据吗？", function () {
+                var ids = ys.getIds(selectedRows);
+                ys.ajax({
+                    url: '@Url.Content("~/sys/Config/DeleteSelected")' + '?ids=' + ids,
+                    type: "post",
+                    success: function (rst) {
+                        if (rst.Flag == 1) {
+                            ys.msgSuccess(rst.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(rst.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    function goToGrantAsManager() {
+        var index = @((int)PermissionType.GrantAsManagerForConfig);
+        var url = '@Url.Content("~/sys/Permission/ManageConfig")' + '?index=' + index;
+        createMenuItem(url, "权限管理-授权配置管理者");
+    }
+
+    function goToGrantAsProducor() {
+        var index = @((int)PermissionType.GrantAsProducerForCustConfig);
+        var cfgType = "";
+        var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+        if (!ys.checkRowEdit(selectedRows)) {
+            return;
+        }
+        else {
+            cfgType = selectedRows[0].Type;
+        }
+        var url = '@Url.Content("~/sys/Permission/ManageConfig")' + '?index=' + index + '&objId=' + cfgType;
+        createMenuItem(url, "权限管理-授权配置生产者");
+    }
+
+
+
+    function goToItem(masterInfo) {
+        var masterId = masterInfo.split('_')[0];
+        var code = masterInfo.split('_')[1];
+        var name = masterInfo.split('_')[2];
+        masterInfo = code + ': ' + name;
+        var url = '@Url.Content("~/sys/ConfigItem/Manage")' + '?masterId=' + masterId + '&masterInfo=' + encodeURIComponent(masterInfo);
+        createMenuItem(url, "配置子项-"+name);
+    }
+
+
+</script>

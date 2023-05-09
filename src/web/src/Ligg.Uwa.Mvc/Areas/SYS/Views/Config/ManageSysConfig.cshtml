@@ -1,0 +1,134 @@
+﻿@{
+    Layout = "~/Views/Shared/_SysPage.cshtml";
+    int configIndex = ViewBag.ConfigIndex;
+    var isOwner = ViewBag.IsOwner;
+    var isManager = ViewBag.IsManager;
+}
+
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        类别：<span id="type" col="Type"></span>
+                    </li>
+                    <li>
+                        名称：<input id="name" col="Name" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div id="toolbar" class="btn-group-sm">
+            @if (isOwner)
+            {
+                <a id="btnGrantAsManager" class="btn btn-success" onclick="goToGrantAsManager()"><i class="fa fa-plus"></i> 授权管理者</a>
+            }
+            @if (isManager)
+            {
+                <a id="btnGrantAsProducer" class="btn btn-success" onclick="goToGrantAsProducor()"><i class="fa fa-plus"></i> 授权生产者</a>
+            }
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        if(@configIndex==@((int)ConfigIndex.DevConfig))
+            $("#type").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(DevConfigType).EnumToDictionaryJson())) });
+        else if(@configIndex==@((int)ConfigIndex.OrpConfig))
+            $("#type").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(OrpConfigType).EnumToDictionaryJson())) });
+        else $("#type").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(FuncConfigType).EnumToDictionaryJson())) });
+        initGrid();
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/sys/config/GetPagedManageDtosJson?id=")'+'@configIndex';
+
+        var configTypes = null;
+
+        if (@configIndex==@((int)ConfigIndex.DevConfig))
+            configTypes = ys.getJson(@Html.Raw(typeof(DevConfigType).EnumToDictionaryJson()));
+        else if(@configIndex==@((int)ConfigIndex.OrpConfig))
+            configTypes = ys.getJson(@Html.Raw(typeof(OrpConfigType).EnumToDictionaryJson()));
+        else configTypes = ys.getJson(@Html.Raw(typeof(FuncConfigType).EnumToDictionaryJson()));
+
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            sortName: 'Type',
+            sortOrder: 'Asc',
+            columns: [
+                { checkbox: true, visible: true },
+                {
+                    field: 'Type', title: '类别', align: "left", width: '60px',sortable: true,
+                    formatter: function (value, item, index) {
+                        var key = item.Type;
+                        if (configTypes) {
+                            for (var i = 0; i < configTypes.length; i++) {
+                                if (configTypes[i].Key == key) {
+                                    if(i%2==0) return '<span class="label label-success">' + configTypes[i].Value + '</span>';
+                                    else return '<span class="label label-primary">' + configTypes[i].Value + '</span>';
+                                }
+                            }
+                        }
+                        return '<span class="label label-warning">' + "Undifined" + '</span>';
+                    }
+                },
+                { field: 'Code', title: '编码',  width:'80px',sortable: true},
+                { field: 'Name', title: '名称'},
+                { field: 'OwnerAccount', title: '责任人', align: "left", width: "100px" },
+                { field: 'ManagerNum', title: '管理者', align: "left", width: "80px" },
+                { field: 'ProducerNum', title: '生产者', align: "left", width: "80px" },
+                { field: 'Id', title: 'Id', visible: true, width: '50px',},
+                {
+                    title: '操作',
+                    align: 'center',width:'100px',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-info btn-xs" href="#" onclick="goToItem(\'' + row.Id+'_' + row.Code +'_'+ row.Name + '\')"><i class="fa fa-list-ul"></i>配置子项</a>');
+                        return actions.join('');
+                    }
+                }
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $('#searchDiv').getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function goToGrantAsManager() {
+        var index = @((int)PermissionType.GrantAsManagerForConfig);
+        var url = '@Url.Content("~/sys/Permission/ManageConfig")' + '?index=' + index;
+        createMenuItem(url, "权限管理-授权配置管理者");
+    }
+
+    function goToGrantAsProducor() {
+        var index = @((int)PermissionType.GrantAsProducerForSysConfig);
+        var url = '@Url.Content("~/sys/Permission/ManageConfig")' + '?index=' + index+'&objId=@configIndex';
+        createMenuItem(url, "权限管理-授权配置生产者");
+    }
+
+    function goToItem(masterInfo) {
+        var masterId = masterInfo.split('_')[0];
+        var code = masterInfo.split('_')[1];
+        var name = masterInfo.split('_')[2];
+        masterInfo = code + ': ' + name;
+        var url = '@Url.Content("~/sys/ConfigItem/Manage")' + '?masterId=' + masterId + '&masterInfo=' + encodeURIComponent(masterInfo);
+        createMenuItem(url, "配置子项-"+name);
+    }
+
+
+</script>

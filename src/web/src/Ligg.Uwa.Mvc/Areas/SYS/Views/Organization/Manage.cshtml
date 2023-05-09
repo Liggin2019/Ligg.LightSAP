@@ -1,0 +1,194 @@
+﻿@{ Layout = "~/Views/Shared/_SysPage.cshtml";
+    string defId = ViewBag.DefaultId;}
+
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@section header{
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.js"))
+}
+
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        类别：<span id="longtype" col="LongType"></span>
+                    </li>
+                    <li>
+                        状态：<span id="status" col="Status"></span>
+                    </li>
+                    <li>
+                        名称或描述：<input id="text" col="Text" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchTreeGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a id="btnAddTop" class="btn btn-success" onclick="showAddTopDialog()"><i class="fa fa-plus"></i> 创建</a>
+            <a id="btnAdd" class="btn btn-success" onclick="showAddEditDialog(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary" onclick="showAddEditDialog(false)"><i class="fa fa-edit"></i> 修改</a>
+            <a id="btnDelete" class="btn btn-danger" onclick="deleteSelected()"><i class="fa fa-remove"></i> 删除</a>
+            <a id="btnExpandAll" class="btn btn-info"><i class="fa fa-exchange"></i> 展开/折叠</a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var id = '';
+    //initPageData('Sys/Organization/Manage');
+    $(function () {
+
+        $("#longtype").ysComboBox({
+            data: getConfigDetailsByMasterId('@((int)FuncConfigSubType.AdminOrgType)'),
+            key: "Id",
+            value: "Name",
+            //class: "form-control"
+        });
+        $("#status").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(StatusType).EnumToDictionaryJson())) });
+        initTreeGrid();
+    });
+
+    function initTreeGrid() {
+        var options = {
+            code: "Id",
+            parentCode: "ParentId",
+            expandAll: false,
+            expandFirst: false,
+            toolbar: '#toolbar',
+            expandColumn: '1',
+            url: '@Url.Content("~/Sys/Organization/GetManageDtosJson")',
+            modalName: "组织",
+            columns: [
+                {field: 'selectItem', radio: true },
+                {field: 'Name', title: '名称', align: "left" },
+
+                { field: 'OwnerName', title: '负责人', width: '100px' },
+                {
+                    field: 'Type', title: '类别', align: "left", width: '80px' ,
+                    formatter: function (value, row, index) {
+                        var span1 = getConfigDetailNameByIdWithStyle(row.Type);
+                        return span1;
+                    }
+                },
+                { field: 'Sequence', title: '排序码', align: "left", width: '60px' },
+                {
+                    field: 'Status', title: '状态', align: "left", width: '60px',
+                    formatter: function (value, row, index) {
+
+                        if (row.Status == @((int)StatusType.Enabled)) {
+
+                            return '<span class="badge badge-primary">' + "@StatusType.Enabled.GetDescription()" + '</span>';
+                        } else {
+                            return '<span class="badge badge-warning">' + "@StatusType.Disabled.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'ModificationTime', title: '修改时间', align: "left", width: '150px',
+                    formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                { field: 'Id', title: 'Id', align: "left", width: '150px'},//visible: false,
+            ],
+            onLoadSuccess: function () {
+                if (id != '') {
+                    $('#gridTable').ysTreeTable('expandRowById', id);
+                }
+            }
+        };
+        $('#gridTable').ysTreeTable(options);
+    }
+
+    function searchTreeGrid(callBackId) {
+        var param = $("#searchDiv").getWebControls();
+        $('#gridTable').ysTreeTable('search', param);
+         if (callBackId) {
+            id = callBackId;
+        }
+    }
+
+    function showAddTopDialog() {
+        var parentId = '@defId';
+        parentId = '@defId';
+        ys.openDialog({
+            title: "创建组织",
+            height:'640px',
+            content: '@Url.Content("~/Sys/Organization/AddTopModal")' + '?id=' + '' + '&parentId=' + parentId,
+            callback: function (index, layero) {
+                var frame = window[layero.find('iframe')[0]['name']];
+                frame.saveForm(index);
+            }
+        });
+    }
+
+    function showAddEditDialog(add) {
+        var parentId = '';
+        var parentName = '';
+        var selectedRows = $("#gridTable").bootstrapTreeTable("getSelections");
+        if (add) {
+            id = '';
+            if (selectedRows.length > 0) {
+                var id1 = selectedRows[0].Id;
+                var row = $('#gridTable').ysTreeTable('getRowById', id1);
+                if (row) {
+                    parentId = row.Id;
+                    parentName = row.Name;
+                }
+            }
+            else {
+                ys.msgError("请选择上级组织");
+                return;
+            }
+        }
+        else {
+            if (!ys.checkRowEdit(selectedRows)) {
+                return;
+            }
+            id = selectedRows[0].Id;
+            parentId = selectedRows[0].ParentId;
+        }
+
+        ys.openDialog({
+            title: id == '' ? "新增组织" : "修改组织",
+            content: '@Url.Content("~/Sys/Organization/AddEditModal")' + '?id=' + id + '&parentId=' + parentId + '&parentName=' + encodeURIComponent(parentName),
+            height:'640px',
+            callback: function (index, layero) {
+                var frame = window[layero.find('iframe')[0]['name']];
+                frame.saveForm(index);
+            }
+        });
+    }
+
+    function deleteSelected() {
+        var selectedRows = $("#gridTable").bootstrapTreeTable("getSelections");
+        if (ys.checkRowDelete(selectedRows)) {
+            ys.confirm("确认要删除选中的" + selectedRows.length + "条数据吗？", function () {
+                var id1 = selectedRows[0].Id;
+                var pId1 = selectedRows[0].ParentId;
+                ys.ajax({
+                    url: '@Url.Content("~/Sys/Organization/DeleteSelected")' + '?id=' + id1,
+                    type: "post",
+                    error: ys.ajaxError,
+                    success: function (rst) {
+                        if (rst.Flag == 1) {
+                            ys.msgSuccess(rst.Message);
+                            searchTreeGrid(pId1);
+                        }
+                        else {
+                            ys.msgError(rst.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+</script>

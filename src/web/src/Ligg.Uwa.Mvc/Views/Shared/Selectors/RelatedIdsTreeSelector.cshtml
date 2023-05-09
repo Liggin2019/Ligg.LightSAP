@@ -1,0 +1,44 @@
+﻿@{
+    Layout = "~/Views/Shared/_ModalForm.cshtml";
+    string url = ViewBag.Url;
+    string updateDataUrl =ViewBag.UpdateDataUrl;
+
+}
+
+<div class="wrapper">
+    <div id="relatedIds" class="ztree treeselect"></div>
+</div>
+
+<script type="text/javascript">
+    var url = '@Html.Raw(url)';
+    var updateDataUrl = '@Html.Raw(updateDataUrl)';
+    $(function () {
+        $('#relatedIds').ysTree({
+            id: "relatedIds",
+            url: url,
+            check: { enable: true },
+            expandLevel: 0,
+        });
+
+        updateData();
+    });
+
+    function updateData() {
+        ys.ajax({
+            url: updateDataUrl,
+            type: "get",
+            success: function (rst) {
+                if (rst.Flag == 1) {
+                    $('#relatedIds').ysTree("setCheckedNodes", rst.Data);
+                }
+                else ys.msgError(rst.Message);
+            }
+        });
+    }
+
+
+    function getSelectedIds() {
+        var ids = $('#relatedIds').ysTree("getCheckedNodes");
+        return ids;
+    }
+</script>

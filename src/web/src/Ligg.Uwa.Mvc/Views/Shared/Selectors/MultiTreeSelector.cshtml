@@ -1,0 +1,31 @@
+﻿@{
+    Layout = "~/Views/Shared/_ModalForm.cshtml";
+    string defId = ViewBag.DefaultId;
+    string url = ViewBag.Url;
+}
+
+
+<div class="wrapper">
+    <div id="selector" class="ztree treeselect"></div>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    if (!id) id = '@defId';
+        var url = '@Html.Raw(url)';
+    $(function () {
+        $('#selector').ysTree({
+            id: "selector",
+            url: url + '?id=' + id ,
+            check: { enable: true },
+            expandLevel: 0,
+            //callback: { onClick: saveChoose }
+        });
+    });
+
+    function GetSelectedIds() {
+        var ids = $('#selector').ysTree("getCheckedNodes")
+        return ids;
+    }
+
+</script>

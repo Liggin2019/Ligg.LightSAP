@@ -1,0 +1,61 @@
+﻿@{
+    Layout = "~/Views/Shared/_ModalForm.cshtml";
+    string url = ViewBag.Url;
+    string updateDataUrl = ViewBag.UpdateDataUrl;
+}
+
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <div id="relatedIds" col="RelatedIds"></div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var url = '@Html.Raw(url)';
+    var updateDataUrl = '@Html.Raw(updateDataUrl)';
+    $(function () {
+
+        ys.ajax({
+            url: url,
+            type: "get",
+            async:false,
+            success: function (rst) {
+                if (rst.Flag == 1) {
+                    $("#relatedIds").ysComboBox({
+                        data: rst.Data ,
+                        class: "form-control",
+                        multiple: true
+                    });
+                }
+                else ys.msgError(rst.Message);
+            }
+        });
+
+        updateData();
+    });
+
+    function updateData() {
+        ys.ajax({
+            url: updateDataUrl,
+            type: "get",
+            //async: false,
+            success: function (rst) {
+                if (rst.Flag == 1) {
+                    $("#form").setWebControls(rst.Data);//to group data, no use
+                    //$('#relatedIds').ysComboBox("setValue",rst.Data); //no use
+                }
+                else ys.msgError(rst.Message);
+            }
+        });
+    }
+
+
+    function getSelectedIds() {
+        var ids = $('#relatedIds').ysComboBox("getValue");
+        return ids;
+    }
+
+</script>
