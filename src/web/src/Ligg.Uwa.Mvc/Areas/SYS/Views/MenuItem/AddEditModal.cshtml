@@ -1,0 +1,299 @@
+﻿@{
+    Layout = "~/Views/Shared/_ModalForm.cshtml";
+    string defId = ViewBag.DefaultId;
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-sm-3 control-label">菜单项类别</label>
+            <div class="col-sm-8 " id="type" col="Type"></div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">上级菜单</label>
+            <div class="col-sm-8">
+                <div id="parentId" col="ParentId"></div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">名称<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input id="name" col="Name" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">编码</label>
+            <div class="col-sm-8">
+                <input id="code" col="Code" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">重定向</label>
+            <div class="col-sm-8">
+                <input id="redirect" col="Redirect" type="text" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label id="pageIdLabel" class="col-sm-3 control-label">页面Id</label>
+            <div class="col-sm-8">
+                <input id="pageId" col="PageId" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">请求参数</label>
+            <div class="col-sm-8">
+                <input id="urlParams" col="UrlParams" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">新页打开</label>
+            <div class="col-sm-8" id="isBlankTarget" col="IsBlankTarget"></div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">排序码</label>
+            <div class="col-sm-8">
+                <input id="sequence" col="Sequence" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">状态</label>
+            <div class="col-sm-8" id="status" col="Status"></div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">样式</label>
+            <div class="col-sm-8">
+                <input id="style" col="Style" type="text" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">描述</label>
+            <div class="col-sm-8">
+                <textarea id="description" col="Description" class="form-control" style="height:68px"></textarea>
+            </div>
+        </div>
+        <div id="iconGroup" class="form-group">
+            <label class="col-sm-3 control-label">图标</label>
+            <div class="col-sm-8">
+                <input id="icon" col="Icon" class="form-control" type="text" placeholder="输入图标">
+                <div id="iconDrop" class="ms-parent" style="width: 100%;">
+                    <div class="icon-drop animated flipInX" style="display: none;max-height:500px;overflow-y:auto">
+                        @Html.PartialAsync("Selectors/IconSelector").Result
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    var parentId = ys.request("parentId");
+    var topParentId = ys.request("topParentId");
+    var type = ys.request("type");
+    var menuType = ys.request("menuType");
+    var act = 'edit';
+    var addTop =false;
+    if (id == '' | id == null) {
+        act = 'add';
+        if (parentId == '@defId') addTop = true;
+    }
+    if (menuType !=@((int)(MenuType.MvcAdmin))) {
+        $("#iconDrop").remove();
+    }
+
+    $(function () {
+        if (menuType ==@((int)(MenuType.MvcAdmin))|menuType ==@((int)(MenuType.MvcSite))) {
+            if (act == 'add') $("#type").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(MenuItemType).EnumToDictionaryJson("Directory SystematicPage CustomizedPage OuterLink"))) });
+            else {
+                if (type == '@((int)MenuItemType.Directory)') $("#type").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(MenuItemType).EnumToDictionaryJson("Directory"))) });
+                else $("#type").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(MenuItemType).EnumToDictionaryJson("SystematicPage CustomizedPage OuterLink"))) });
+            }
+        }
+        else if (menuType ==@((int)(MenuType.VueClient))) {
+            if (act == 'add') $("#type").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(MenuItemType).EnumToDictionaryJson("Directory VueView OuterLink"))) });
+            else {
+                if (type == '@((int)MenuItemType.Directory)') $("#type").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(MenuItemType).EnumToDictionaryJson("Directory"))) });
+                else $("#type").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(MenuItemType).EnumToDictionaryJson("VueView OuterLink"))) });
+            }
+        }
+        else {//addTop
+            $("#type").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(MenuItemType).EnumToDictionaryJson("Directory"))) });
+        }
+
+        if (addTop) {//addTop
+            $('input[name=type_radiobox]').attr('disabled', 'true');
+            $("#iconGroup").addClass('hide');
+        }
+
+        $('#parentId').ysComboBoxTree({ url: '@Url.Content("~/Sys/MenuItem/GetMenuItemTreeJsonForSelectParent")' + '?topParentId=' + topParentId, async: false });
+        $("#status").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(StatusType).EnumToDictionaryJson())) });
+        $("#isBlankTarget").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(YesOrNo).EnumToDictionaryJson())) });
+
+        if (parentId == '@defId') {
+            $('#parentId_input').attr('disabled', 'true');
+            $("#parentId_input").val("根目录");
+            $("#menuTypeWrapper").addClass("hide");
+        }
+
+        getForm();
+        $("#icon").focus(function () {
+            $(".icon-drop").show();
+        });
+        $(".icon-drop").find(".ico-list i").on("click", function () {
+            $('#icon').val($(this).attr('class'));
+            $(".icon-drop").hide();
+        });
+
+        $('input[name=type_radiobox]').on('ifChecked', function (event) {
+            var menuType = $(event.target).val();
+            ChangeVisibility(menuType);
+        });
+
+        $("#form").validate({
+            rules: {
+                name: { required: true, maxlength: 31 },
+                sequence: { digits:true },
+                urlParams: { maxlength: 63 },
+                code: { maxlength: 31 },
+                redirect: { maxlength: 255 },
+                style: { maxlength: 127 },
+                icon: { maxlength: 63 },
+                pageId: { digits: true },
+
+            }
+        });
+    });
+
+    function getForm() {
+        if (act =='add') {//add
+            ys.ajax({
+                url: '@Url.Content("~/Sys/MenuItem/GetMaxSequenceNoJson")' + '?parentId=' + parentId,
+                type: "get",
+                success: function (rst) {
+                    if (rst.Flag == 1) {
+                        var defaultData = {};
+                        defaultData.MenuType = menuType;
+                        defaultData.ParentId = parentId;
+                        defaultData.Status = "@((int)StatusType.Enabled)";
+                        defaultData.Type = "@((int)MenuItemType.Directory)";
+                        defaultData.IsBlankTarget = "@((int)StatusType.Disabled)";
+                        ChangeVisibility(defaultData.Type);
+                        defaultData.Sequence = rst.Data;
+                        $("#form").setWebControls(defaultData);
+                    }
+                    else ys.msgError(rst.Message);
+                }
+            });
+        }
+        else {//edit
+             ys.ajax({
+                url: '@Url.Content("~/Sys/MenuItem/GetEditDtoJson")' + '?id=' + id,
+                type: "get",
+                success: function (rst) {
+                    if (rst.Flag == 1) {
+                        var menuType = rst.Data.Type;
+                        ChangeVisibility(menuType);
+                        rst.Data.MenuType = menuType;
+                        $("#form").setWebControls(rst.Data);
+                    }
+                    else ys.msgError(rst.Message);
+                }
+             });
+        }
+    }
+
+    function saveForm(index) {
+        if (!ys.checkTextLenth("description", "描述", 0, 127)) return;
+
+        if ($("#form").validate().form()) {
+            var postData = $("#form").getWebControls({ Id: id });
+            postData.ParentId = ys.getLastValue(postData.ParentId);
+            ys.ajax({
+                url: '@Url.Content("~/Sys/MenuItem/")' + act,
+                type: "post",
+                data: postData,
+                success: function (rst) {
+                    if (rst.Flag == 1) {
+                        ys.msgSuccess(rst.Message);;
+                        parent.searchTreeGrid(postData.ParentId);
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(rst.Message);
+                    }
+                }
+            });
+        }
+    }
+
+    function ChangeVisibility(menuItemType) {
+        if (menuItemType == "@((int)MenuItemType.Directory)") {
+            $("#isBlankTarget").parents(".form-group").hide();
+            if (menuType ==@((int)(MenuType.MvcAdmin))| menuType ==@((int)(MenuType.VueClient))) {
+                $("#icon").parents(".form-group").show();
+            }
+            else $("#icon").parents(".form-group").hide();
+            $("#pageId").parents(".form-group").hide();
+            $("#urlParams").parents(".form-group").hide();
+            $("#style").parents(".form-group").hide();
+            if (parentId == '@defId') {
+                $("#code").parents(".form-group").hide();
+                $("#redirect").parents(".form-group").hide();
+            }
+            else if (menuType == @((int)MenuType.VueClient)) {
+                $("#code").parents(".form-group").show();
+                $("#redirect").parents(".form-group").show();
+            }
+            else {
+                $("#code").parents(".form-group").hide();
+                $("#redirect").parents(".form-group").hide();
+            }
+        } else if (menuItemType == "@((int)MenuItemType.SystematicPage)") {
+            $("#isBlankTarget").parents(".form-group").show();
+            $("#icon").parents(".form-group").hide();
+            $("#pageId").parents(".form-group").show();
+            $("#urlParams").parents(".form-group").show();
+            $("#style").parents(".form-group").hide();
+            $("#code").parents(".form-group").hide();
+            $("#redirect").parents(".form-group").hide();
+        } else if (menuItemType == "@((int)MenuItemType.VueView)") {
+            $("#isBlankTarget").parents(".form-group").hide();
+            $("#icon").parents(".form-group").show();
+            $("#pageId").parents(".form-group").show();
+            $('#pageIdLabel').html('视图Id');
+            $("#urlParams").parents(".form-group").show();
+            $("#style").parents(".form-group").hide();
+            $("#code").parents(".form-group").show();
+            $("#redirect").parents(".form-group").hide();
+        } else if (menuItemType == "@((int)MenuItemType.CustomizedPage)") {
+            $("#isBlankTarget").parents(".form-group").show();
+            $("#icon").parents(".form-group").hide();
+            $("#pageId").parents(".form-group").show();
+            $("#urlParams").parents(".form-group").show();
+            $("#style").parents(".form-group").show();
+            $("#code").parents(".form-group").hide();
+            $("#redirect").parents(".form-group").hide();
+        }else if (menuItemType == "@((int)MenuItemType.OuterLink)") {
+            $("#isBlankTarget").parents(".form-group").hide();
+            if (menuType ==@((int)(MenuType.MvcAdmin))|menuType ==@((int)(MenuType.VueClient))) { $("#icon").parents(".form-group").show(); }
+            else $("#icon").parents(".form-group").hide();
+            $("#pageId").parents(".form-group").show();
+            $('#pageIdLabel').html('外链Id');
+            $("#urlParams").parents(".form-group").hide();
+            $("#style").parents(".form-group").hide();
+            if (menuType !=@((int)(MenuType.VueClient))) {
+                $("#code").parents(".form-group").hide();
+                $("#redirect").parents(".form-group").hide();
+            }
+            else {
+                $("#code").parents(".form-group").show();
+                 $("#redirect").parents(".form-group").hide();
+            }
+        }
+    }
+
+
+</script>

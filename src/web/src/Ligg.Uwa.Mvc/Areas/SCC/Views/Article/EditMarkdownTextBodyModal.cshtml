@@ -1,0 +1,97 @@
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@{ Layout = "~/Views/Shared/_ModalForm.cshtml";
+}
+
+
+<link rel="stylesheet" type="text/css" href="/lib/bootstrap-markdown/css/bootstrap-markdown.min.css">
+
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <textarea id="body" col="Body" style="height:580px;" name="content" data-provide="markdown" data-iconlibrary="fa" rows="10"></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="/lib/bootstrap-markdown/js/markdown.js"></script>
+<script src="/lib/bootstrap-markdown/js/to-markdown.js"></script>
+<script src="/lib/bootstrap-markdown/js/bootstrap-markdown.js"></script>
+@*<script src="lib/bootstrap-markdown/js/bootstrap-markdown.fr.js"></script>*@
+
+<script type="text/javascript">
+    var id = ys.request("id");
+    var act = 'editBody';
+
+    $(function ($) {
+        $.fn.markdown.messages.zh = {
+            'Bold': "粗体",
+            'Italic': "斜体",
+            'Heading': "标题",
+            'URL/Link': "链接",
+            'Image': "图片",
+            'List': "列表",
+            'Unordered List': "无序列表",
+            'Ordered List': "有序列表",
+            'Code': "代码",
+            'Quote': "引用",
+            'Preview': "预览",
+            'strong text': "粗体",
+            'emphasized text': "强调",
+            'heading text': "标题",
+            'enter link description here': "输入链接说明",
+            'Insert Hyperlink': "URL地址",
+            'enter image description here': "输入图片说明",
+            'Insert Image Hyperlink': "图片URL地址",
+            'enter image title here': "在这里输入图片标题",
+            'list text here': "这里是列表文本",
+            'code text here': "这里输入代码",
+            'quote here': "这里输入引用文本"
+        };
+        getForm();
+    });
+    //初始化编辑器
+    $("#editor").markdown({
+        autofocus: true,
+        language: 'zh',
+    })
+
+    function getForm() {
+            ys.ajax({
+                url: '@Url.Content("~/Scc/Article/GetEditBodyDtoJson")' + '?id=' + id,
+                type: "get",
+                success: function (rst) {
+                    if (rst.Flag == 1) {
+                        var result = rst.Data;
+                        $("#form").setWebControls(result);
+                    }
+                    else ys.msgError(rst.Message);
+                }
+            });
+    }
+
+    function saveForm(index) {
+        if (true) {
+            var postData = $("#form").getWebControls({ Id: id });
+            //postData.Body =editor.getValue();
+            ys.ajax({
+                url: '@Url.Content("~/Scc/Article/")' + act,
+                type: "post",
+                data: postData,
+                success: function (rst) {
+                    if (rst.Flag == 1) {
+                        ys.msgSuccess(rst.Message);
+                    }
+                    else ys.msgError(rst.Message);
+                }
+            });
+        }
+    }
+
+    function LeaveForm(index) {
+        parent.searchGrid();
+        parent.layer.close(index);
+    }
+
+</script>

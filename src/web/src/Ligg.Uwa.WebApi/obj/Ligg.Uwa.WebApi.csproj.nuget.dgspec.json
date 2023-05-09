@@ -1,0 +1,531 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Uwa.WebApi\\Ligg.Uwa.WebApi.csproj": {}
+  },
+  "projects": {
+    "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFramework.Entities\\Ligg.EntityFramework.Entities.csproj": {
+      "version": "3.1.1",
+      "restore": {
+        "projectUniqueName": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFramework.Entities\\Ligg.EntityFramework.Entities.csproj",
+        "projectName": "Ligg.EntityFramework.Entities",
+        "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFramework.Entities\\Ligg.EntityFramework.Entities.csproj",
+        "packagesPath": "C:\\Users\\adm-dev\\.nuget\\packages\\",
+        "outputPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFramework.Entities\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\adm-dev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://39.100.64.24:1000/nuget": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFrameworkCore\\Ligg.EntityFrameworkCore.csproj": {
+      "version": "3.1.1",
+      "restore": {
+        "projectUniqueName": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFrameworkCore\\Ligg.EntityFrameworkCore.csproj",
+        "projectName": "Ligg.EntityFrameworkCore",
+        "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFrameworkCore\\Ligg.EntityFrameworkCore.csproj",
+        "packagesPath": "C:\\Users\\adm-dev\\.nuget\\packages\\",
+        "outputPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFrameworkCore\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\adm-dev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://39.100.64.24:1000/nuget": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFramework.Entities\\Ligg.EntityFramework.Entities.csproj": {
+                "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFramework.Entities\\Ligg.EntityFramework.Entities.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Autofac.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[5.0.15, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools.DotNet": {
+              "target": "Package",
+              "version": "[2.0.3, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[16.5.0, )"
+            },
+            "MySql.Data": {
+              "target": "Package",
+              "version": "[8.0.13, )"
+            },
+            "NUnit": {
+              "target": "Package",
+              "version": "[3.12.0, )"
+            },
+            "NUnit3TestAdapter": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.16.0, )"
+            },
+            "Pomelo.EntityFrameworkCore.MySql": {
+              "target": "Package",
+              "version": "[5.0.4, )"
+            },
+            "Z.EntityFramework.Plus.EFCore": {
+              "target": "Package",
+              "version": "[5.13.14, )"
+            },
+            "autofac": {
+              "target": "Package",
+              "version": "[5.1.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Infrastructure\\Ligg.Infra.Std\\Ligg.Infrastructure.Std.csproj": {
+      "version": "3.5.7",
+      "restore": {
+        "projectUniqueName": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Infrastructure\\Ligg.Infra.Std\\Ligg.Infrastructure.Std.csproj",
+        "projectName": "Ligg.Infrastructure.Std",
+        "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Infrastructure\\Ligg.Infra.Std\\Ligg.Infrastructure.Std.csproj",
+        "packagesPath": "C:\\Users\\adm-dev\\.nuget\\packages\\",
+        "outputPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Infrastructure\\Ligg.Infra.Std\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\adm-dev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://39.100.64.24:1000/nuget": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "targetAlias": "netstandard2.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "targetAlias": "netstandard2.0",
+          "dependencies": {
+            "Autofac": {
+              "target": "Package",
+              "version": "[5.1.2, )"
+            },
+            "FreeSql": {
+              "target": "Package",
+              "version": "[3.2.687, )"
+            },
+            "FreeSql.Provider.MySql": {
+              "target": "Package",
+              "version": "[3.2.687, )"
+            },
+            "FreeSql.Provider.Oracle": {
+              "target": "Package",
+              "version": "[3.2.687, )"
+            },
+            "FreeSql.Provider.SqlServer": {
+              "target": "Package",
+              "version": "[3.2.687, )"
+            },
+            "FreeSql.Provider.Sqlite": {
+              "target": "Package",
+              "version": "[3.2.687, )"
+            },
+            "Microsoft.AspNet.WebApi.Client": {
+              "target": "Package",
+              "version": "[5.2.7, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            },
+            "NLog": {
+              "target": "Package",
+              "version": "[5.1.2, )"
+            },
+            "NPOI": {
+              "target": "Package",
+              "version": "[2.5.6, )"
+            },
+            "NPOI.OOXML.dll": {
+              "target": "Package",
+              "version": "[2.0.6, )"
+            },
+            "NPOI.OpenXml4Net.dll": {
+              "target": "Package",
+              "version": "[2.0.6, )"
+            },
+            "NPOI.OpenXmlFormats.dll": {
+              "target": "Package",
+              "version": "[2.0.6, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.3, )"
+            },
+            "SharpZipLib": {
+              "target": "Package",
+              "version": "[1.3.3, )"
+            },
+            "System.Drawing.Common": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "System.Reflection.Emit": {
+              "target": "Package",
+              "version": "[4.7.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Uwa.Application\\Ligg.Uwa.Application.csproj": {
+      "version": "3.1.1",
+      "restore": {
+        "projectUniqueName": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Uwa.Application\\Ligg.Uwa.Application.csproj",
+        "projectName": "Ligg.Uwa.Application",
+        "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Uwa.Application\\Ligg.Uwa.Application.csproj",
+        "packagesPath": "C:\\Users\\adm-dev\\.nuget\\packages\\",
+        "outputPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Uwa.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\adm-dev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://39.100.64.24:1000/nuget": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFramework.Entities\\Ligg.EntityFramework.Entities.csproj": {
+                "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFramework.Entities\\Ligg.EntityFramework.Entities.csproj"
+              },
+              "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFrameworkCore\\Ligg.EntityFrameworkCore.csproj": {
+                "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFrameworkCore\\Ligg.EntityFrameworkCore.csproj"
+              },
+              "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Infrastructure\\Ligg.Infra.Std\\Ligg.Infrastructure.Std.csproj": {
+                "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Infrastructure\\Ligg.Infra.Std\\Ligg.Infrastructure.Std.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[10.1.1, )"
+            },
+            "Autofac": {
+              "target": "Package",
+              "version": "[5.1.2, )"
+            },
+            "Autofac.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Autofac.Extras.Quartz": {
+              "target": "Package",
+              "version": "[5.1.0, )"
+            },
+            "EnyimMemcachedCore": {
+              "target": "Package",
+              "version": "[2.1.5, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            },
+            "Microsoft.AspNetCore.Authentication.OpenIdConnect": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            },
+            "Microsoft.Extensions.DependencyModel": {
+              "target": "Package",
+              "version": "[2.0.4, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            },
+            "Microsoft.Extensions.Options.ConfigurationExtensions": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            },
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[16.5.0, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.13.1, )"
+            },
+            "NUnit": {
+              "target": "Package",
+              "version": "[3.12.0, )"
+            },
+            "NUnit3TestAdapter": {
+              "target": "Package",
+              "version": "[3.16.0, )"
+            },
+            "Quartz": {
+              "target": "Package",
+              "version": "[3.0.7, )"
+            },
+            "StackExchange.Redis": {
+              "target": "Package",
+              "version": "[2.5.43, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Uwa.WebApi\\Ligg.Uwa.WebApi.csproj": {
+      "version": "3.1.1",
+      "restore": {
+        "projectUniqueName": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Uwa.WebApi\\Ligg.Uwa.WebApi.csproj",
+        "projectName": "Ligg.Uwa.WebApi",
+        "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Uwa.WebApi\\Ligg.Uwa.WebApi.csproj",
+        "packagesPath": "C:\\Users\\adm-dev\\.nuget\\packages\\",
+        "outputPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Uwa.WebApi\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\adm-dev\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "http://39.100.64.24:1000/nuget": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {
+              "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFramework.Entities\\Ligg.EntityFramework.Entities.csproj": {
+                "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.EntityFramework\\Ligg.EntityFramework.Entities\\Ligg.EntityFramework.Entities.csproj"
+              },
+              "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Infrastructure\\Ligg.Infra.Std\\Ligg.Infrastructure.Std.csproj": {
+                "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Infrastructure\\Ligg.Infra.Std\\Ligg.Infrastructure.Std.csproj"
+              },
+              "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Uwa.Application\\Ligg.Uwa.Application.csproj": {
+                "projectPath": "D:\\Doing\\coding\\coding-doing\\arch\\Ligg.Web\\src-sharing\\src\\web\\src\\Ligg.Uwa.Application\\Ligg.Uwa.Application.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Autofac.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[6.0.0, )"
+            },
+            "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
+              "target": "Package",
+              "version": "[3.1.31, )"
+            },
+            "NLog.Web.AspNetCore": {
+              "target": "Package",
+              "version": "[4.14.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.1.4, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

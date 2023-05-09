@@ -1,0 +1,395 @@
+﻿@{
+    Layout = "~/Views/Shared/_SysPage.cshtml";
+    string masterType = ViewBag.MasterType;
+    string masterTypeName = ViewBag.MasterTypeName;
+    string topMastersJsonStr = ViewBag.TopMastersJsonString;
+
+}
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@section header{
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/js/ztree.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.js"))
+}
+
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <div style="padding-left:1px">
+                <span id="top-master" />
+            </div>
+            <div class="box-header" style="padding: 12px 10px 0px 10px;">
+                <div class="box-title" style="font-size:14px">
+                    @masterTypeName
+                </div>
+                <div class="box-tools pull-right">
+                    <a type="button" class="btn btn-box-tool menuItem" href="#" onclick="goToManageDirectory()" title="管理@(masterTypeName)"><i class="fa fa-edit"></i></a>
+                    <button type="button" class="btn btn-box-tool" id="btnExpandTree" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapseTree" title="折叠"><i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefreshMaster" title="刷新@(masterTypeName)"><i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="ui-layout-content">
+                <div id="masterTree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <input type="hidden" id="masterId" col="MasterId">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        <label style="margin-top:4px">多层搜索：</label>
+                    </li>
+                    <li style="width:60px">
+                        <span id="recursiveSearch" col="RecursiveSearch"></span>
+                    </li>
+                    <li>
+                        类别：<span id="type" col="Type" />
+                    </li>
+                    <li>
+                        状态：<span id="status" col="Status"></span>
+                    </li>
+                    <li>
+                        文本：
+                        <input id="text" col="Text" type="text" />
+                    </li>
+                    <li class="select-time">
+                        <label>创建时间： </label>
+                        <input id="startCreationTime" col="StartCreationTime" type="text" class="time-input" placeholder="开始时间" />
+                        <span>-</span>
+                        <input id="endCreationTime" col="EndCreationTime" type="text" class="time-input" placeholder="结束时间" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="toolbar" class="btn-group-sm">
+            <a id="btnAdd" class="btn btn-success" onclick="showAddEditDialog(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showAddEditDialog(false)"><i class="fa fa-edit"></i> 修改</a>
+            <a id="btnEditBody" class="btn btn-primary disabled" onclick="showEditBodyDialog(false)"><i class="fa fa-edit"></i> 编辑正文</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteSelected()"><i class="fa fa-remove"></i> 删除</a>
+            <a id="btnUploadSquareThumbnail" class="btn btn-primary disabled" onclick="showUploadSquareThumbnailDialog()"><i class="fa fa-upload"></i> 上传缩略图</a>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        $("#top-master").ysComboBox({ onChange: onTopMasterChange, class: 'no-additional-option', data: ys.getJson(@Html.Raw(topMastersJsonStr)) });
+        $("#status").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(StatusType).EnumToDictionaryJson())) });
+        $("#type").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(ArticleType).EnumToDictionaryJson())) });
+        $("#recursiveSearch").ysComboBox({class: 'no-additional-option', data: ys.getJson(@Html.Raw(typeof(YesOrNo).EnumToDictionaryJson()))});
+        initTree();
+        initGrid();
+
+        $("#gridTable").on("check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table", function () {
+            var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+
+            if ($('#btnUploadThumbnail')) {
+                $('#btnUploadThumbnail').toggleClass('disabled', selectedRows.length != 1);
+            }
+
+            if ($('#btnUploadSquareThumbnail')) {
+                $('#btnUploadSquareThumbnail').toggleClass('disabled', selectedRows.length != 1);
+            }
+            if ($('#btnUploadImage')) {
+                $('#btnUploadImage').toggleClass('disabled', selectedRows.length != 1);
+            }
+            if ($('#btnUploadVideo')) {
+                $('#btnUploadVideo').toggleClass('disabled', selectedRows.length != 1);
+            }
+            if ($('#btnEditBody')) {
+                $('#btnEditBody').toggleClass('disabled', selectedRows.length != 1);
+            }
+
+            if ($('#btnManageAttachedImages')) {
+                $('#btnManageAttachedImages').toggleClass('disabled', selectedRows.length != 1);
+            }
+            if ($('#btnManageAttachedFiles')) {
+                $('#btnManageAttachedFiles').toggleClass('disabled', selectedRows.length != 1);
+            }
+        });
+
+        $('body').layout({ west__size: 185 });
+        laydate.render({ elem: '#startCreationTime', format: 'yyyy-MM-dd' });
+        laydate.render({ elem: '#endCreationTime', format: 'yyyy-MM-dd' });
+
+        $('#btnExpandTree').click(function () {
+            var tree = $.fn.zTree.getZTreeObj("masterTree");
+            tree.expandAll(true);
+            $(this).hide();
+            $('#btnCollapseTree').show();
+        });
+
+        $('#btnCollapseTree').click(function () {
+            var tree = $.fn.zTree.getZTreeObj("masterTree");
+            tree.expandAll(false);
+            $(this).hide();
+            $('#btnExpandTree').show();
+        });
+
+        $('#btnRefreshMaster').click(function () {
+            initTree();
+            initGrid();
+            searchGrid();
+        });
+
+    });
+
+    function initTree() {
+        var topId = $('#top-master_select').val();
+        $('#masterId').val(topId);
+        $('#masterTree').ysTree({
+            url: '@Url.Content("~/Scc/Article/GetCategoryTreeJsonForManage")' + '?topMasterId=' + topId,
+            async: true,
+            expandLevel: 2,
+            maxHeight: "800px",
+            callback: {
+                onClick: function (event, treeId, treeNode) {
+                    $("#masterId").val(treeNode.id);
+                    searchGrid();
+                }
+            }
+        });
+    }
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/Scc/Article/GetPagedManageDtosJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            sortName: 'Sequence',
+            sortOrder: 'Asc',
+            columns: [
+                { checkbox: true, visible: true },
+                {
+                    field: 'Type', title: '类别', align: "left", sortable: true,
+                    formatter: function (value, item, index) {
+                        if (item.Type == "@((int)ArticleType.RichText)") {
+                            return '<span class="label label-success">@ArticleType.RichText.GetDescription()</span>';
+                        }
+                        else if (item.Type == "@((int)ArticleType.HtmlText)") {
+                            return '<span class="label label-primary">@ArticleType.HtmlText.GetDescription()</span>';
+                        }
+                        else if (item.Type == "@((int)ArticleType.MarkdownText)") {
+                            return '<span class="label label-info">@ArticleType.MarkdownText.GetDescription()</span>';
+                        }
+                        else if (item.Type == "@((int)ArticleType.OutLink)") {
+                            return '<span class="label label-danger">@ArticleType.OutLink.GetDescription()</span>';
+                        }
+                        else if (item.Type == "@((int)ArticleType.ArticleShortcut)") {
+                            return '<span class="label label-warning">@ArticleType.ArticleShortcut.GetDescription()</span>';
+                        }
+                        else if (item.Type == "@((int)ArticleType.HttpFileShortcut)") {
+                            return '<span class="label warning-light">@ArticleType.HttpFileShortcut.GetDescription()</span>';
+                        }
+                    }
+                },
+                { field: 'Name', title: '标题', sortable: true },
+                { field: 'Description', title: '描述' },
+                { field: 'Note', title: '说明', sortable: true },
+                { field: 'MasterCascadePath', title: '路径' },
+                {
+                    field: 'HasThumbnail', title: '缩略图',
+                    formatter: function (value, row, index) {
+                        if (row.HasThumbnail == "@((int)HasOrNone.Has)") {
+                            return '<span class="badge badge-primary">' + "@HasOrNone.Has.GetDescription()" + '</span>';
+                        } else {
+                            return '<span class="badge badge-warning">' + "@HasOrNone.None.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+                {field: 'HasImage', title: '原图',
+                    formatter: function (value, row, index) {
+                        if (row.HasImage == "@((int)HasOrNone.Has)") {
+                            return '<span class="badge badge-primary">' + "@HasOrNone.Has.GetDescription()" + '</span>';
+                        } else {
+                            return '<span class="badge badge-warning">' + "@HasOrNone.None.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+                {field: 'HasVideo', title: '视频',
+                    formatter: function (value, row, index) {
+                        if (row.HasVideo == "@((int)HasOrNone.Has)") {
+                            return '<span class="badge badge-primary">' + "@HasOrNone.Has.GetDescription()" + '</span>';
+                        } else {
+                            return '<span class="badge badge-warning">' + "@HasOrNone.None.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+                { field: 'AttachedFilesNum', title: '附件数' },
+                { field: 'AttachedImagesNum', title: '附图数' },
+                { field: 'Sequence', title: '排序码', align: "left", sortable: true },
+                {
+                    field: 'Status', title: '状态', sortable: true,
+                    formatter: function (value, row, index) {
+                        if (row.Status == "@((int)StatusType.Enabled)") {
+                            return '<span class="badge badge-primary">' + "@StatusType.Enabled.GetDescription()" + '</span>';
+                        } else {
+                            return '<span class="badge badge-warning">' + "@StatusType.Disabled.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'ModificationTime', title: '修改时间', width: '150px', sortable: true,
+                    formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                { field: 'Id', title: 'Id', width: '100px', visible: false },
+                {
+                    title: '操作',
+                    align: 'center',
+                    width: '60px',
+                    formatter: function (value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-info btn-xs" href="#" onclick="goToDisplay(\'' + row.Id +'\'' + ','+'\''+row.Type + '\')"><i class="fa"></i>浏览</a>');
+                        //actions.push('<a class="btn btn-info btn-xs" href="#" onclick="goToManageAttachedImages(\'' + row.Id + '\')"><i class="fa"></i>管理页内图片</a>');
+                        //actions.push('<a class="btn btn-info btn-xs" style="margin-left:10px" href="#" onclick="goToManageAttachedFiles(\'' + row.Id + '\')"><i class="fa"></i>管理附件</a>');
+                        return actions.join('');
+                    }
+                }
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $("#searchDiv").getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+    function showAddEditDialog(add) {
+        var id = '';
+        var masterId ='';
+        if (!add) {
+            var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+            if (!ys.checkRowEdit(selectedRows)) {
+                return;
+            }
+            else {
+                id = selectedRows[0].Id;
+            }
+        }
+        else {
+            masterId = $("#masterId").val();
+        }
+        ys.openDialog({
+            title: id == '' ? "新增文章":"修改文章",
+            content: '@Url.Content("~/Scc/Article/AddEditModal")' + '?id=' + id + '&masterId=' + masterId,
+            height:'500px',
+            callback: function (index, layero) {
+                var frame = window[layero.find('iframe')[0]['name']];
+                frame.saveForm(index);
+            }
+        });
+    }
+
+    function showEditBodyDialog() {
+        var id = '';
+        var type = 0;
+        var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+        if (!ys.checkRowEdit(selectedRows)) {
+            return;
+        }
+        else {
+            id = selectedRows[0].Id;
+            type = selectedRows[0].Type;
+        }
+
+        var w = type == '@((int)ArticleType.OutLink)' ? '600px' : '100%';
+        var h = type == '@((int)ArticleType.OutLink)' ? '400px' : '100%';
+        ys.openDialog({
+            title: "编辑正文-" + selectedRows[0].Name ,
+            content: '@Url.Content("~/Scc/Article/EditBodyModal")' + '?id=' + id,
+            width: w,
+            height:h,
+            btn: ['保存', '关闭'],
+            callback: function (index, layero) {
+                var frame = window[layero.find('iframe')[0]['name']];
+                frame.saveForm(index);
+            }
+        });
+    }
+
+    function showUploadSquareThumbnailDialog() {
+        var id = '';
+        var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+        if (!ys.checkRowEdit(selectedRows)) {
+            return;
+        }
+        else {
+            id = selectedRows[0].Id;
+        }
+
+        ys.openDialog({
+            title: "上传缩略图",
+            height: '580px',
+            btn: ['取消'],
+            content: '@Url.Content("~/Scc/Article/UploadAttachmentModal")' + '?index=squareThumbnail&id=' + id,
+            callback: function (index, layero) {
+                var frame = window[layero.find('iframe')[0]['name']];
+                frame.LeaveAndRefreshParent(index);
+            }
+        });
+    }
+
+    function deleteSelected() {
+        var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+        if (ys.checkRowDelete(selectedRows)) {
+            ys.confirm("确认要删除选中的" + selectedRows.length + "条数据吗？", function () {
+                var ids = ys.getIds(selectedRows);
+                ys.ajax({
+                    url: '@Url.Content("~/Scc/Article/DeleteSelected")' + '?ids=' + ids,
+                    type: "post",
+                    error: ys.ajaxError,
+                    success: function (rst) {
+                        if (rst.Flag == 1) {
+                            ys.msgSuccess(rst.Message);
+                            searchGrid();
+                        }
+                        else ys.msgError(rst.Message);
+                    }
+                });
+            });
+        }
+    }
+
+
+
+    function onTopMasterChange() {
+        initTree();
+        initGrid();
+        searchGrid();
+    }
+
+    function goToManageDirectory() {
+        var url = '@Url.Content("~/Scc/Directory/Manage?index=")' +'@masterType';
+        createMenuItem(url, "管理@(masterTypeName)");
+    }
+
+
+    function goToDisplay(id, type) {
+        var url = "Show?id=" + id;
+        window.open(url);
+    }
+
+
+</script>

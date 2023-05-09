@@ -1,0 +1,8 @@
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+
+<script type="text/javascript" src='@Url.Content("/lib/jquery/2.1.4/jquery.min.js")'></script>
+@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/app/site/js/site.min.js"))
+<script type="text/javascript" src='@Url.Content("~/lib/layer/3.1.1/layer.min.js")'></script>
+<script type="text/javascript" src='@Url.Content("~/lib/laydate/5.0.9/laydate.min.js")'></script>
+
+

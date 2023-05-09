@@ -1,0 +1,132 @@
+﻿
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+<link rel="stylesheet" type="text/css" href="/lib/github-markdown-css/5.1.0/github-markdown.css">
+<link rel="stylesheet" href="/lib/highlight/9.13.1/css/default.css" />
+
+<script src="/lib/jquery/2.1.4/jquery.min.js"></script>
+<script src="/lib/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="/lib/highlight/9.13.1/highlight.js"></script>
+<script src="/lib/marked/0.6.1/marked.min.js"></script>
+
+@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/app/site/js/lazyload.min.js"))
+@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/app/site/js/site.min.js"))
+@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/layer/3.1.1/layer.min.js"))
+@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/yisha/3.1/js/yisha.min.js"))
+@{
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="keywords" content=@ViewBag.Keywords>
+    <meta name="description" content=@ViewBag.Description>
+    <link rel="bookmark" href='@Url.Content("~"+ViewBag.PageUrl)' content=@ViewBag.Description />
+    <link rel="shortcut icon" href="@Url.Content("~"+ViewBag.IcoUrl)" type="image/x-icon" />
+
+    <link rel="stylesheet" href='@Url.Content("~/lib/bootstrap/3.3.7/css/bootstrap.min.css")'>
+    <link rel="stylesheet" href='@Url.Content("~/lib/fontawesome/4.7.0/css/fontawesome.min.css")'>
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/app/site/css/site.min.css"))
+}
+
+@{
+    var ErrorUrl = "";
+    var entityId = "";
+    var style = "";
+    string entityIdStr = ViewBag.ObjectId;
+    if (!entityIdStr.IsNullOrEmpty()) entityId = entityIdStr;
+    if (entityId.IsNullOrEmpty()) ErrorUrl = "/Home/Error/wcfg/entityId/null";
+    style = ViewBag.Option ?? "news";
+    if (style.IsNullOrEmpty()) ErrorUrl = "/Home/Error/wcfg/style/null";
+    else
+    {
+        style = style.ToLower();
+        if (style != "landingpage" & style != "news" & style != "article" & style != "knowledge")
+        {
+            ErrorUrl = "/Home/Error/wcfg/style/" + style;
+        }
+    }
+
+    var getTextUrl = "";
+    if (ErrorUrl.IsNullOrEmpty())
+    {
+        getTextUrl = "/Scc/" + "Article" + "/GetShowModelJson/none/all/" + entityId + "/" + style;
+    }
+}
+
+@if (style == "landingpage")
+{
+    <div id="Body" class="row  landingpage">
+    </div>
+}
+else
+{
+    <div class="row article-wrapper">
+        <div class="container article-wrapper-container">
+            <div class="markdown-body article-wrapper-detail">
+                <div class="row">
+                    <div class="col-md-12 article-wrapper-content">
+                        <div class="article-wrapper-header">
+                            <div id="Name" class="article-wrapper-header-title"></div>
+                            <div class="article-wrapper-header-remark">
+                                <ul>
+                                    <li><span id="HumanizedModificationTime"></span></li>
+                                </ul>
+                            </div>
+                            <div id="Description" class="article-wrapper-header-desc">
+                            </div>
+                        </div>
+                        <div id="Body" class="article-wrapper-body">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+    if ('@ErrorUrl') window.location.replace('@ErrorUrl');
+    $(function () {
+        RenderText('@getTextUrl');
+    });
+
+    function RenderText(getTextUrl) {
+        $.ajax({
+            type: 'get',
+            url: getTextUrl,
+            async: false,
+            success: function (rst) {
+                if (rst.Flag == 1) {
+                    var data = rst.Data;
+                    document.title = "文章展示-" + data.Name;
+                    $('#Name').html(data.Name);
+                    $('#Description').html(data.Description);
+                    $('#HumanizedModificationTime').html(data.HumanizedModificationTime);
+
+                    if (data.Type == 'MarkdownText')
+                        $("#Body").html(marked(data.Body));
+                    else $('#Body').html(data.Body);
+
+                    if ('@style' == 'knowledge') {
+                        $('#MasterCascadePath').html(data.MasterCascadePath);
+                        $('#Tags').html(data.Tags);
+                    }
+                    if ('@style' == 'article' | '@style' == 'knowledge') {
+                        $('#AttachedFilesNum').html(data.AttachedFilesNum);
+                    }
+                }
+                else ys.msgError(rst.Message);
+            }
+        });
+    }
+
+</script>
+
+<style>
+
+    img[src*="#fullw"] {
+        width: 100%;
+    }
+
+    img[src*="#halfw"] {
+        width: 50%;
+    }
+</style>
+

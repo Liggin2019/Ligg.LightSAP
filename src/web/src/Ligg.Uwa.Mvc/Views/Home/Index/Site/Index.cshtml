@@ -1,0 +1,46 @@
+﻿
+@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@await Html.PartialAsync("~/Views/Shared/CustPagePartial.cshtml")
+@{
+    var layout = ViewData["Layout"];
+    Layout = "~/Views/Shared/" + layout + ".cshtml";
+    var custPageModel = ViewData["CustPageModel"];
+
+    var landingPageUrl = ViewBag.LandingPageUrl;
+    ConfigItem portal = ViewBag.CurrentPortal;
+    var portalId = portal.Id.ToString();
+    var isTranparentHeader = ViewBag.IsTranparentHeader;
+    //IgnoreBody();
+}
+
+@BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/app/portal-data.min.js"))
+@*@await Component.InvokeAsync("CustPage", custPageModel)*@
+
+<div id="body-main">
+</div>
+
+<script type="text/javascript">
+    function setIndexPortal() {
+        var portal = {};
+        portal.Id = '@portalId';
+        portal.ClientType = '@((int)ClientType.MvcSite)';
+        setPortal(portal);
+        initPortalData();
+    }
+
+    renderElement('@landingPageUrl', 'body-main');
+    setHeaderBackground('@isTranparentHeader' == 'True');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,310 @@
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@section header{
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/css/metroStyle/metroStyle.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/zTree/v3/js/ztree.min.js"))
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/jquery.layout/1.4.4/jquery.layout-latest.min.js"))
+}
+
+@{
+    Layout = "~/Views/Shared/_SysPage.cshtml";
+    var type = ViewBag.Type;
+    string typeDictJson = ViewBag.TypeDictJson;
+    string objectId = ViewBag.ObjectId;
+    string objectName = ViewBag.ObjectName;
+    string actorTypeNames = ViewBag.ActorTypeNames;
+}
+
+<div class="ui-layout-west">
+    <div class="main-content">
+        <div class="box box-main">
+            <div style="padding-left:1px">
+                <span id="pmsType" />
+            </div>
+            <div class="box-header" style="padding: 12px 10px 0px 10px;">
+                <div id="typeObjectName" class="box-title" style="font-size:14px">
+                    @objectName
+                </div>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" id="btnExpandTree" title="展开" style="display:none;"><i class="fa fa-chevron-up"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnCollapseTree" title="折叠"><i class="fa fa-chevron-down"></i></button>
+                    <button type="button" class="btn btn-box-tool" id="btnRefreshMaster" title="刷新@(objectName)"><i class="fa fa-refresh"></i></button>
+                </div>
+            </div>
+            <div class="ui-layout-content" style="padding-top:2px">
+                <div id="masterTree" class="ztree"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-div ui-layout-center">
+    <div class="row">
+        <div class="col-sm-12">
+            <span class="box-title" style="font-size: 13px;">权限对象:&nbsp;</span><span id="masterName">请选择</span>
+        </div>
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <input type="hidden" id="type" col="Type">
+            <input type="hidden" id="masterId" col="MasterId">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        类型：<span id="actorType" col="ActorType"></span>
+                    </li>
+                    <li class="select-time">
+                        <label>创建时间： </label>
+                        <input id="startCreationTime" col="StartCreationTime" type="text" class="time-input" placeholder="开始时间" />
+                        <span>-</span>
+                        <input id="endCreationTime" col="EndCreationTime" type="text" class="time-input" placeholder="结束时间" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="toolbar" class="btn-group-sm">
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var type = @type;
+    var masterName='@objectName';
+
+    $(function () {
+        $("#pmsType").ysComboBox({ onChange: onTypeChange, class: 'no-additional-option', data: ys.getJson(@Html.Raw(typeDictJson)) });
+        $("#pmsType").ysComboBox("setValue", '@type');
+        $('#pmsType_select').attr('disabled', 'true');
+        $("#type").val(type);
+        var actorTypeNameDict = ys.getJson(@Html.Raw(typeof(ActorType).EnumToDictionaryJson(actorTypeNames)));
+        $("#actorType").ysComboBox({ data: actorTypeNameDict });
+        if ('@type' == '@((int)PermissionType.Operate)') {
+            $("#masterId").val(-1);
+            $("#masterName").html("所有" + masterName);
+        }
+        else {
+            $("#masterId").val(-2);
+            $("#masterName").html("所有" + masterName);
+        }
+
+        initTree();
+        initGrid();
+        renderToolBar(actorTypeNameDict)
+
+        $('body').layout({ west__size: 185 });
+        laydate.render({ elem: '#startCreationTime', format: 'yyyy-MM-dd' });
+        laydate.render({ elem: '#endCreationTime', format: 'yyyy-MM-dd' });
+
+        $('#btnExpandTree').click(function () {
+            var tree = $.fn.zTree.getZTreeObj("masterTree");
+            tree.expandAll(true);
+            $(this).hide();
+            $('#btnCollapseTree').show();
+        });
+
+        $('#btnCollapseTree').click(function () {
+            var tree = $.fn.zTree.getZTreeObj("masterTree");
+            tree.expandAll(false);
+            $(this).hide();
+            $('#btnExpandTree').show();
+        });
+
+        $('#btnRefreshMaster').click(function () {
+            initTree();
+        });
+
+    });
+
+    function initTree() {
+        $('#masterTree').ysTree({
+            url: '@Url.Content("~/Sys/Permission/GetMasterTreeJsonForManage")' + '?type='+type+'&objId='+'@objectId',
+            async: true,
+            expandLevel: 2,
+            maxHeight: "800px",
+            callback: {
+                onClick: function (event, treeId, treeNode) {
+                    if (!treeNode.id.startsWith('virtual-')) {
+                        $("#masterId").val(treeNode.id);
+                        $("#masterName").html(treeNode.name);
+                    }
+                    searchGrid();
+                }
+            }
+        });
+    }
+
+    function initGrid() {
+        var actorTypes = ys.getJson(@Html.Raw(typeof(ActorType).EnumToDictionaryJson()));
+        var queryUrl = '@Url.Content("~/sys/Permission/GetPagedManageDtosJson")'+'?objId=@objectId';
+        var previousMasterName = "";
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            sortName: 'MasterId',
+            sortOrder: 'Asc',
+            toolbar: '#toolbar',
+            columns: [
+                { checkbox: true, visible: true },
+              
+                {
+                    field: 'MasterName', title: '权限对象', width: '250px',
+                    formatter: function (value, item, index) {
+                        if (previousMasterName != value) {
+                            previousMasterName = value;
+                            return '<span class="label label-success">' + value + '</span>';
+                        }
+                        else {
+
+                            return '<span class="label label-primary">' + value + '</span>';
+                        }
+
+                    }
+                },
+                {
+                    field: 'ActorType', title: '类别', width: '40px', sortable: true,
+                    formatter: function (value, item, index) {
+                        var key = item.ActorType;
+                        for (var i = 0; i < actorTypes.length; i++) {
+                            if (actorTypes[i].Key == key) {
+                                if (key == '@((int)(ActorType.User))') {
+                                    return '<span class="label label-info">' + actorTypes[i].Value + '</span>';
+                                }
+                                else if (key == '@((int)(ActorType.Machine))') {
+                                    return '<span class="label label-warning">' + actorTypes[i].Value + '</span>';
+                                }
+                                     else if (key == '@((int)(ActorType.Role))') {
+                                    return '<span class="label label-primary">' + actorTypes[i].Value + '</span>';
+                                }
+                                else {
+                                    return '<span class="label label-default">' + actorTypes[i].Value + '</span>';
+                                }
+                            }
+                        }
+                    }
+                },
+
+                { field: 'ActorName', title: '名称或姓名', sortable: true },
+                { field: 'ActorAccount', title: '用户账号'},
+                { field: 'CreatorAccount', title: '创建者账号', sortable: true, width: '145px',},
+                {
+                    field: 'CreationTime', title: '创建时间', width:'150px',sortable: true,
+                    formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                { field: 'Id', title: 'Id', visible: false,width: '100px' },
+
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $("#searchDiv").getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+        resetToolbarStatus();
+    }
+
+
+    function showAddDialog(actorType, actorTypeName) {
+        var masterId = $('#masterId').val(); 
+        if (masterId < 0) {
+            ys.msgError("请选择" + masterName); 
+            return;
+        }
+
+        var name = actorTypeName;
+        ys.openDialog({
+            title: "新增" + name,
+            content: '/Sys/Permission/AddModal' + '?type=' + type + '&masterId=' + masterId+ '&actorType=' + actorType,
+            width: "600px",
+            height: "490px",
+            shadeClose: true,
+            callback: function (index, layero) {
+                var frame = window[layero.find('iframe')[0]['name']];
+                var ids = frame.getSelectedIds();
+                ys.ajax({
+                    url: '/Sys/Permission/Add' + '?type=' + type + '&masterId=' + masterId+ '&actorType=' + actorType+'&relatedIds=' + ids,
+                    type: "post",
+                    success: function (rst) {
+                        if (rst.Flag == 1) {
+                            ys.msgSuccess(rst.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(rst.Message);
+                        }
+                    }
+                });
+                layer.close(index);
+            }
+        });
+    }
+
+    function AddAny(actorType) {
+        var masterId = $('#masterId').val();
+        ys.ajax({
+            url: '/Sys/Permission/Add' + '?type' + type + '&masterId=' + masterId + '&actorType=' + actorType,
+            type: "post",
+            error: ys.ajaxError,
+            success: function (rst) {
+                if (rst.Flag == 1) {
+                ys.msgSuccess(rst.Message);
+                    searchGrid();
+                }
+                else {
+                    ys.msgError(rst.Message);
+                }
+            }
+        });
+    }
+
+    function deleteSelected() {
+        var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+        if (ys.checkRowDelete(selectedRows)) {
+            ys.confirm("确认要删除选中的" + selectedRows.length + "条数据吗？", function () {
+                var ids = ys.getIds(selectedRows);
+                ys.ajax({
+                    url: '@Url.Content("~/Sys/Permission/DeleteSelected")' + '?ids=' + ids,
+                    type: "post",
+                    error: ys.ajaxError,
+                    success: function (rst) {
+                        if (rst.Flag == 1) {
+                            ys.msgSuccess(rst.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(rst.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+    function onTypeChange() {
+    }
+
+    function renderToolBar(actorTypeNameDict) {
+        var html = "";
+        actorTypeNameDict.forEach(function (val, index) {
+            var html1 = '<a id = ' + 'btnAdd' + val.Key + ' class="btn btn-primary"' + 'onclick =' + 'showAddDialog(' + '"' + val.Key + '"' + ',' + '"' + val.Value + '"'  + ')' + '> <i class="fa fa-plus"></i> ' + '新增' + val.Value + '</a >';
+            html = html +'\n' +html1;
+
+        });
+        html = html+'\n' +
+            '<a id=btnDelete class="btn btn-danger disabled" onclick="deleteSelected()"><i class="fa fa-remove"></i> 删除</a>';
+        $("#toolbar").html(html);
+    }
+
+
+</script>

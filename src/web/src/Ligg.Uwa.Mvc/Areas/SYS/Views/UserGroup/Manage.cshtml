@@ -1,0 +1,199 @@
+﻿@{
+    Layout = "~/Views/Shared/_SysPage.cshtml";
+    int type = ViewBag.Type;
+    string typeName = ViewBag.TypeName;
+}
+<div class="container-div">
+    <div class="row">
+        <div id="searchDiv" class="col-sm-12 search-collapse">
+            <input id="type" col="Type" type="text" class="hide" />
+            <div class="select-list">
+                <ul>
+                    <li>
+                        状态：<span id="status" col="Status"></span>
+                    </li>
+                    <li>
+                        名称：<input id="text" col="Text" type="text" />
+                    </li>
+                    <li>
+                        <a id="btnSearch" class="btn btn-primary btn-sm" onclick="searchGrid()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="btn-group-sm" id="toolbar">
+            <a id="btnAdd" class="btn btn-success" onclick="showAddEditDialog(true)"><i class="fa fa-plus"></i> 新增</a>
+            <a id="btnEdit" class="btn btn-primary disabled" onclick="showAddEditDialog(false)"><i class="fa fa-edit"></i> 修改</a>
+            <a id="btnManageUsers" class="btn btn-primary disabled" onclick="showUpdateSubUsersDialog()"><i class="fa fa-edit"></i> 管理用户</a>
+            <a id="btnDelete" class="btn btn-danger disabled" onclick="deleteSelected()"><i class="fa fa-remove"></i> 删除</a>
+        </div>
+
+        <div class="col-sm-12 select-table table-striped">
+            <table id="gridTable" data-mobile-responsive="true"></table>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var type = '@type';
+
+    $(function () {
+        $("#type").val(type);
+        $("#status").ysComboBox({ data: ys.getJson(@Html.Raw(typeof(StatusType).EnumToDictionaryJson())) });
+        initGrid();
+
+        $("#gridTable").on("check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table", function () {
+            var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+            if ($('#btnManageUsers')) {
+                $('#btnManageUsers').toggleClass('disabled', selectedRows.length != 1);
+            }
+        });
+    });
+
+    function initGrid() {
+        var queryUrl = '@Url.Content("~/Sys/"+ "UserGroup" + "/GetPagedManageDtosJson")';
+        $('#gridTable').ysTable({
+            url: queryUrl,
+            sortName: 'Sequence',
+            sortOrder: 'Asc',
+            columns: [
+                { checkbox: true, visible: true},
+
+                { field: 'Name', title: '名称', sortable: true, width: '120px' },
+                { field: 'Description', title: '描述' },
+                { field: 'UserNum', title: '用户数', sortable: true, width: '60px' },
+
+                {
+                    field: 'Builtin', title: '内置', sortable: true, visible: @type==@((int)(UserGroupType.Role)), width: '40px',
+                    formatter: function (value, row, index) {
+                        if (value == "@((int)YesOrNo.Yes)") {
+                            return '<span class="badge badge-primary">' + "@YesOrNo.Yes.GetDescription()" + '</span>';
+                        } else {
+                            return '<span class="badge badge-warning">' + "@YesOrNo.No.GetDescription()" + '</span>';
+                        }
+                    },
+                },
+
+
+                { field: 'Sequence', title: '排序码', sortable: true, width: '60px',},
+                {
+                    field: 'Status', title: '状态', sortable: true, width: '20px',
+                    formatter: function (value, row, index) {
+                        if (value == "@((int)StatusType.Enabled)"){
+                            return '<span class="badge badge-primary">' + "@StatusType.Enabled.GetDescription()" + '</span>';
+                        } else {
+                            return '<span class="badge badge-warning">' + "@StatusType.Disabled.GetDescription()" + '</span>';
+                        }
+                    }
+                },
+                {
+                    field: 'ModificationTime', title: '创建时间', sortable: true, width:'150px',
+                    formatter: function (value, row, index) {
+                        return ys.formatDate(value, "yyyy-MM-dd HH:mm:ss");
+                    }
+                },
+                { field: 'Id', title: 'Id', visible: false, width: '100px' }
+            ],
+            queryParams: function (params) {
+                var pagination = $('#gridTable').ysTable('getPagination', params);
+                var queryString = $("#searchDiv").getWebControls(pagination);
+                return queryString;
+            }
+        });
+    }
+
+    function searchGrid() {
+        $('#gridTable').ysTable('search');
+    }
+
+    function showAddEditDialog(add) {
+        var id = '';
+        if (add) {}
+        else {
+            var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+            if (!ys.checkRowEdit(selectedRows)) {
+                return;
+            }
+            else {
+                var buildin = selectedRows[0].Builtin;
+                if (buildin == 1) {
+                    ys.alertError("内置" + "@typeName" +"不能修改")
+                    return;
+                }
+                id = selectedRows[0].Id;
+            }
+        }
+
+        ys.openDialog({
+            title: id =='' ? "新建"+"@typeName" : "修改"+"@typeName" ,
+            content: '@Url.Content("~/Sys/" + "UserGroup" + "/AddEditModal")' + '?id=' + id + '&type=' +type,
+            height: "340px",
+            callback: function (index, layero) {
+                var childFrame = window[layero.find('iframe')[0]['name']];
+                childFrame.saveForm(index);
+            }
+        });
+    }
+
+
+    function showUpdateSubUsersDialog() {
+
+        var id = '';
+        var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+        if (!ys.checkRowEdit(selectedRows)) {
+            return;
+        }
+
+        id = selectedRows[0].Id;
+         ys.openDialog({
+            title: "用户选择",
+            content: '@Url.Content("~/Sys/" + "UserGroup" + "/SelectSubUsersModal")'+ '?type='+'@ViewBag.Type'+'&id=' + id,
+            width: "300px",
+            height: "590px",
+            shadeClose: true,
+            callback: function (index, layero) {
+                var frame = window[layero.find('iframe')[0]['name']];
+                var ids = frame.getSelectedIds();
+                
+                ys.ajax({
+                    url: '@Url.Content("~/Sys/" + "UserGroup" + "/UpdateSubUsers")' + '?type='+'@ViewBag.Type'+ '&id='+id+'&relatedIds=' + ids,
+                    type: "post",
+                    success: function (rst) {
+                        if (rst.Flag == 1) {
+                            ys.msgSuccess(rst.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(rst.Message);
+                        }
+                    }
+                });
+
+                layer.close(index);
+            }
+        });
+    }
+
+    function deleteSelected() {
+        var selectedRows = $("#gridTable").bootstrapTable("getSelections");
+        if (ys.checkRowDelete(selectedRows)) {
+            ys.confirm("确认要删除选中的" + selectedRows.length + "条数据吗？", function () {
+                var ids = ys.getIds(selectedRows);
+                ys.ajax({
+                    url: '@Url.Content("~/Sys/" + "UserGroup" + "/DeleteSelected")' + '?type=' + type+ '&ids=' + ids,
+                    type: "post",
+                    success: function (rst) {
+                        if (rst.Flag == 1) {
+                            ys.msgSuccess(rst.Message);
+                            searchGrid();
+                        }
+                        else {
+                            ys.msgError(rst.Message);
+                        }
+                    }
+                });
+            });
+        }
+    }
+
+</script>

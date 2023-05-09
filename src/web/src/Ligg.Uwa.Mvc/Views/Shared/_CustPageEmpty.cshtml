@@ -1,0 +1,24 @@
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@await Html.PartialAsync("~/Views/Shared/CustPagePartial.cshtml")
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width,initial-scale=1" name="viewport">
+    <link rel="stylesheet" href='@Url.Content("~/lib/bootstrap/3.3.7/css/bootstrap.min.css")'>
+    <link rel="stylesheet" href='@Url.Content("~/lib/fontawesome/4.7.0/css/fontawesome.min.css")'>
+
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/app/site/css/site.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/app/site/css/" + "site-theme.min.css"))
+</head>
+
+<body>
+    <div>
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+</body>
+</html>
+

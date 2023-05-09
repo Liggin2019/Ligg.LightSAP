@@ -1,0 +1,222 @@
+﻿@inject Microsoft.AspNetCore.Hosting.IWebHostEnvironment HostingEnvironment
+@{
+    ViewBag.Title = "登录";
+}
+@{
+    ShowTenantDto tenant = ViewBag.CurrentTenant;
+    bool tenantIsNull = tenant == null;
+    string tenantShortName = "Undefiled";
+    string tenantIcoUrl = "/favicon.ico";
+    string tenantThumbnailUrl = "/images/no-thumbnail.png";
+    string tenantImageUrl = "/images/no-image.png";
+    if (!tenantIsNull)
+    {
+        if (tenant.Id == "0")
+        {
+            tenantThumbnailUrl = "/images/tenant/logo.png";
+            tenantImageUrl = "/images/tenant/trademark.png";
+            tenantIcoUrl = "/images/tenant/ico.ico";
+        }
+        else
+        {
+            if (!tenant.ThumbnailPostfix.IsNullOrEmpty())
+            {
+                var fileName = "image" + tenant.ThumbnailPostfix;
+                tenantThumbnailUrl = Url.Content("~/File/GetImage/Attachment/TenantThumbnail/" + tenant.Id) + "?fileName=" + (fileName) + "&random=" + new Random().Next();
+            }
+            if (!tenant.ImagePostfix.IsNullOrEmpty())
+            {
+                var fileName = "image" + tenant.ImagePostfix;
+                tenantImageUrl = Url.Content("~/File/GetImage/Attachment/TenantImage/" + tenant.Id) + "?fileName=" + (fileName) + "&random=" + new Random().Next();
+            }
+            if (tenant.HasIco == 1)
+            {
+                var fileName = "ico.ico";
+                tenantIcoUrl = Url.Content("~/File/GetImage/Attachment/TenantIco/" + tenant.Id) + "?fileName=" + (fileName) + "&random=" + new Random().Next();
+            }
+        }
+        tenantShortName = tenant.ShortName;
+    }
+
+    ConfigItem portal = ViewBag.CurrentPortal;
+    bool portalIsNull = portal == null;
+    string portalId = portalIsNull ? "Undefined" : portal.Id.ToString();
+    string portalName = portalIsNull ? "Undefined" : portal.Name;
+    string portalDes = !portalIsNull ? (portal.Description.IsNullOrEmpty() ? "Undefined" : portal.Description) : "null";
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="shortcut icon" href="@Url.Content("~"+tenantIcoUrl)" type="image/x-icon" />
+
+    <link rel="stylesheet" href='@Url.Content("~/lib/bootstrap/3.3.7/css/bootstrap.min.css")'>
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/app/admin/css/logon.min.css"))
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/app/admin/css/admin.min.css"))
+
+    <script type="text/javascript" src='@Url.Content("~/lib/jquery/2.1.4/jquery.min.js")'></script>
+    <script type="text/javascript" src='@Url.Content("~/lib/layer/3.1.1/layer.min.js")'></script>
+    <script type="text/javascript" src='@Url.Content("~/lib/jquery.validation/1.14.0/jquery.validate.min.js")'></script>
+    @BundlerHelper.Render(HostingEnvironment.ContentRootPath, Url.Content("~/lib/yisha/3.1/js/yisha.min.js"))
+
+    <script>
+        if (window.top !== window.self) {
+            window.top.location = window.location
+        };
+    </script>
+    <style type="text/css">
+        body {
+            height: auto;
+            background: url(/images/background/background.jpg) no-repeat center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            color: rgba(255,255,255,.95)
+        }
+    </style>
+</head>
+
+<body class="white-bg">
+    <div class="logon-container">
+        <div>
+            <ul class="nav">
+                <li id="tenant" class="logo" style="padding-left:9px">
+                    <div class="image-left">
+                        <img alt="image" src='@tenantThumbnailUrl' class="img-circle" height="32" width="32" />
+                    </div>
+                    <div class="block" style="padding-left: 42px; margin-top: 2px;text-align: left; ">
+                        <span class="block">@tenantShortName</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="row logon-title">
+            <h2 style="text-align:center">@(portalName + ": " + portalDes)</h2>
+        </div>
+        <div class="logon-panel">
+            <div class="row section">
+                <div class="col-sm-12">
+                    <form id="form">
+                        <h4 class="no-margin">用户登录</h4>
+                        <input id="account" name="account" class="form-control uname" col="Account" type="text" placeholder="账号" value="@ViewBag.UserName" />
+                        <input id="password" name="password" class="form-control pword m-b" col="Password" type="password" placeholder="密码" value="@ViewBag.Password" />
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <input id="captchaCode" name="captchaCode" type="text" col="CaptchaCode" class="form-control code" placeholder="验证码" maxlength="3">
+                            </div>
+                            <div class="col-xs-2">
+                                <a href="javascript:void(0);" title="点击更换验证码">
+                                    <img id="captchaImage" src='@Url.Content("~/Home/GetCaptchaImage")' height="34" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="checkbox-custom">
+                            <input id="rememberMe" name="rememberMe" type="checkbox"> <label for="rememberMe">三天内自动登录</label>
+                        </div>
+                        <button class="btn btn-success btn-block" onclick="logon(); return false;">登录</button>
+                    </form>
+                </div>
+            </div>
+            @if (!GlobalContext.SystemSetting.SupportMultiTenants)
+            {
+                <div class="row section" style="padding:10px 0">
+                    <div class="col-sm-12">
+                        <h4 class="no-margin"><i style="color: gold">示例账号</i>：</h4>
+                        <p class="no-margin"><i style="color:gold">账号</i>: root&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 密码: 123456, 根用户</p>
+                        <p class="no-margin"><i style="color:gold">账号</i>: admin&nbsp;&nbsp;&nbsp; 密码: 123456, 角色: 系统管理员</p>
+                        <p class="no-margin"><i style="color:gold">账号</i>: user&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;密码: 123456, 角色: 无</p>
+                        <p class="no-margin"><i style="color:gold">账号</i>: ppp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;密码: 123456, 角色: 物料管理员 考勤管理员, 权限组: 配置组 开发组</p>
+                        <p class="no-margin"><i style="color:gold">账号</i>: qqq&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;密码: 123456, 角色: 配置管理员 权限管理员 物料主管 考勤主管, 权限组: 配置组 实施组 开发组</p>
+                        <p class="no-margin"><i style="color:gold">账号</i>: www&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;密码: 123456, 配置 Ownner, 以用户身份参与各项操作</p>
+                    </div>
+                </div>
+            }
+
+            <div class="logon-footer">
+                <div style="text-align:center">
+                    &copy; @DateTime.Now.Year-@DateTime.Now.AddYears(1).Year <a href="#" target="_blank" style="color:white"></a> Liggit All Rights Reserved.<br>
+                    <a href="" target="_blank" rel="nofollow"></a><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    var portal = ys.request("portal");
+
+    $(function () {
+        if ($.cookie('RememberMe') == 1) {
+            $('#rememberMe').prop('checked', true);
+            if ('@GlobalContext.SystemSetting.LogonMode' == 'Cookie') {
+                if (!ys.isNullOrEmpty($.cookie('WebToken'))) {
+                    redirectToIndex();
+                }
+            }
+            else {
+                $.removeCookie('WebToken', { path: '/' });
+            }
+        }
+
+        $("#rememberMe").click(function () {
+            if ($(this).prop("checked")) {
+                $.cookie('RememberMe', 1, { expires: 3, path: '/' });
+            }
+        });
+
+        $('#captchaImage').click(function () {
+            $(this).attr('src', '@Url.Content("~/Home/GetCaptchaImage")' + '?t=' + new Date().getTime());
+        });
+
+        $('#form').validate({
+            rules: {
+                account: { required: true },
+                password: { required: true }
+            }
+        });
+
+        $.validator.setDefaults({
+            submitHandler: function () {
+                logon();
+            }
+        });
+
+        if ('@GlobalContext.SystemSetting.IsDemo' == 'True') {
+            $('#account').val('root');
+            $('#password').val('123456');
+        }
+    });
+
+    function logon() {
+        if ($("#form").validate().form()) {
+            var postData = $("#form").getWebControls();
+            console.log(postData);
+            ys.ajax({
+                url: '@Url.Content("~/Sys/User/Logon")',
+                type: "post",
+                data: postData,
+                success: function (rst) {
+                    if (rst.Flag == 1) {
+                        ys.msgSuccess(rst.Message);
+                        redirectToIndex();
+                    }
+                    else {
+                        ys.msgError(rst.Message);
+                    }
+                }
+            });
+        }
+    }
+
+    function redirectToIndex() {
+        location.href = '@Url.Content("~/Home/Index")'+'?index='+portal;
+    }
+</script>
+
+

@@ -1,0 +1,565 @@
+// Configure bundling and minification for the project.
+// More info at https://go.microsoft.com/fwlink/?LinkId=808241
+[
+  {
+    "outputFileName": "wwwroot/app/site/js/portal-init.min.js",
+    "inputFiles": [
+      "wwwroot/app/site/js/portal-init.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/app/portal-data.min.js",
+    "inputFiles": [
+      "wwwroot/app/portal-data.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/app/site/js/lazyload.min.js",
+    "inputFiles": [
+      "wwwroot/app/site/js/lazyload.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/app/site/js/site.min.js",
+    "inputFiles": [
+      "wwwroot/app/site/js/site.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/app/site/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/app/site/css/site.css",
+      "wwwroot/app/site/css/site-component.css",
+      "wwwroot/app/site/css/site-layout.css"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/app/site/css/site-theme.min.css",
+    "inputFiles": [
+      "wwwroot/app/site/css/site-theme.css"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/app/site/css/site-theme-seablue.min.css",
+    "inputFiles": [
+      "wwwroot/app/site/css/site-theme-seablue.css"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/app/site/js/page-init.min.js",
+    "inputFiles": [
+      "wwwroot/app/site/js/page-init.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+
+  {
+    "outputFileName": "wwwroot/app/admin/js/page-data.min.js",
+    "inputFiles": [
+      "wwwroot/app/admin/js/page-data.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/app/admin/css/admin.min.css",
+    "inputFiles": [
+      "wwwroot/app/admin/css/admin.css",
+      "wwwroot/app/admin/css/admin-theme.css",
+      "wwwroot/app/admin/css/admin-animate.css"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/app/admin/css/logon.min.css",
+    "inputFiles": [
+      "wwwroot/app/admin/css/logon.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  //{
+  //  "outputFileName": "wwwroot/lib/yisha/3.1/css/style.min.css",
+  //  "inputFiles": [
+  //    "wwwroot/lib/yisha/3.1/css/style.css",
+  //    "wwwroot/lib/yisha/3.1/css/animate.css",
+  //    "wwwroot/lib/yisha/3.1/css/skins.css"
+  //  ],
+  //  "minify": {
+  //    "enabled": false,
+  //    "renameLocals": true
+  //  }
+  //},
+  //{
+  //  "outputFileName": "wwwroot/lib/yisha/3.1/css/logon.min.css",
+  //  "inputFiles": [
+  //    "wwwroot/lib/yisha/3.1/css/logon.css"
+  //  ],
+  //  "minify": {
+  //    "enabled": true,
+  //    "renameLocals": true
+  //  }
+  //},
+
+  {
+    "outputFileName": "wwwroot/lib/yisha/3.1/js/yisha.min.js",
+    "inputFiles": [
+      "wwwroot/lib/yisha/3.1/js/yisha.js",
+      "wwwroot/lib/yisha/3.1/js/yisha-plugin.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/yisha/3.1/css/yisha.min.css",
+    "inputFiles": [
+      "wwwroot/lib/yisha/3.1/css/yisha.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/yisha/3.1/js/yisha-init.min.js",
+    "inputFiles": [
+      "wwwroot/lib/yisha/3.1/js/yisha-init.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/yisha/3.1/js/yisha-index.min.js",
+    "inputFiles": [
+      "wwwroot/lib/yisha/3.1/js/yisha-index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/jquery/2.1.4/jquery.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery/2.1.4/jquery.js",
+      "wwwroot/lib/jquery.blockui/2.7/jquery.blockUI.js",
+      "wwwroot/lib/jquery.cookie/1.4.1/jquery.cookie.js",
+      "wwwroot/lib/jquery.fullscreen/1.2/jquery.fullscreen.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/bootstrap/3.3.7/css/bootstrap.min.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap/3.3.7/css/bootstrap.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/bootstrap/3.3.7/js/bootstrap.min.js",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap/3.3.7/js/bootstrap.js",
+      "wwwroot/lib/bootstrap/3.3.7/js/bootstrap.dropdown.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/fontawesome/4.7.0/css/fontawesome.min.css",
+    "inputFiles": [
+      "wwwroot/lib/fontawesome/4.7.0/css/font-awesome.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/layer/3.1.1/layer.min.js",
+    "inputFiles": [
+      "wwwroot/lib/layer/3.1.1/layer.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/laydate/5.0.9/laydate.min.js",
+    "inputFiles": [
+      "wwwroot/lib/laydate/5.0.9/laydate.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/jquery.validation/1.14.0/jquery.validate.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery.validation/1.14.0/jquery.validate.js",
+      "wwwroot/lib/jquery.validation/1.14.0/jquery.validate.extend.js",
+      "wwwroot/lib/jquery.validation/1.14.0/localization/messages_zh.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/zTree/v3/css/metroStyle/metroStyle.min.css",
+    "inputFiles": [
+      "wwwroot/lib/zTree/v3/css/metroStyle/metroStyle.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/zTree/v3/js/ztree.min.js",
+    "inputFiles": [
+      "wwwroot/lib/zTree/v3/js/jquery.ztree.all-3.5.js",
+      "wwwroot/lib/yisha/3.1/js/yisha-jquery-ztree-plugin.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/select2/4.0.6/css/select2.min.css",
+    "inputFiles": [
+      "wwwroot/lib/select2/4.0.6/css/select2.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/select2/4.0.6/js/select2.min.js",
+    "inputFiles": [
+      "wwwroot/lib/select2/4.0.6/js/select2.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/jquery.layout/1.4.4/jquery.layout-latest.min.css",
+    "inputFiles": [
+      "wwwroot/lib/jquery.layout/1.4.4/jquery.layout-latest.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/jquery.layout/1.4.4/jquery.layout-latest.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery.layout/1.4.4/jquery.layout-latest.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/icheck/1.0.2/skins/custom.min.css",
+    "inputFiles": [
+      "wwwroot/lib/icheck/1.0.2/skins/custom.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/icheck/1.0.2/icheck.min.js",
+    "inputFiles": [
+      "wwwroot/lib/icheck/1.0.2/icheck.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/bootstrap.table/1.12.0/bootstrap-table.min.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap.table/1.12.0/bootstrap-table.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/bootstrap.table/1.12.0/bootstrap-table.min.js",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap.table/1.12.0/bootstrap-table.js",
+      "wwwroot/lib/bootstrap.table/1.12.0/extensions/mobile/bootstrap-table-mobile.js",
+      "wwwroot/lib/bootstrap.table/1.12.0/locale/bootstrap-table-zh-CN.js",
+      "wwwroot/lib/yisha/3.1/js/yisha-jquery-bootstrap-table-plugin.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap.treetable/1.0/bootstrap-treetable.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/bootstrap.treetable/1.0/bootstrap-treetable.min.js",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap.treetable/1.0/bootstrap-treetable.js",
+      "wwwroot/lib/yisha/3.1/js/yisha-jquery-bootstrap-treetable-plugin.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/jquery.smartwizard/4.0.1/css/smart_wizard.min.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap/3.3.7/css/bootstrap-theme.css",
+      "wwwroot/lib/jquery.smartwizard/4.0.1/css/smart_wizard.css",
+      "wwwroot/lib/jquery.smartwizard/4.0.1/css/smart_wizard_theme_arrows.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/jquery.smartwizard/4.0.1/css/smart_wizard.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery.smartwizard/4.0.1/js/jquery.smartWizard.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/jquery.ui/1.12.1/jquery-ui.min.css",
+    "inputFiles": [
+      "wwwroot/lib/jquery.ui/1.12.1/jquery-ui.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/jquery.ui/1.12.1/jquery-ui.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery.ui/1.12.1/jquery-ui.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/highlight/9.13.1/css/vs.min.css",
+    "inputFiles": [
+      "wwwroot/lib/highlight/9.13.1/css/vs.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/jquery.ui/1.12.1/highlight.pack.min.js",
+    "inputFiles": [
+      "wwwroot/lib/highlight/9.13.1/highlight.pack.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/cropbox/1.0/cropbox.min.css",
+    "inputFiles": [
+      "wwwroot/lib/cropbox/1.0/cropbox.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/cropbox/1.0/cropbox.min.js",
+    "inputFiles": [
+      "wwwroot/lib/cropbox/1.0/cropbox.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/imageupload/1.0/css/imgup.min.css",
+    "inputFiles": [
+      "wwwroot/lib/imageupload/1.0/css/imgup.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/imageupload/1.0/js/imgup.min.js",
+    "inputFiles": [
+      "wwwroot/lib/imageupload/1.0/js/imgup.js",
+      "wwwroot/lib/imageupload/1.0/js/preview.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/fileinput/5.0.3/js/fileinput.min.js",
+    "inputFiles": [
+      "wwwroot/lib/fileinput/5.0.3/js/fileinput.js",
+      "wwwroot/lib/fileinput/5.0.3/js/locales/zh.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/fileinput/5.0.3/css/fileinput.min.css",
+    "inputFiles": [
+      "wwwroot/lib/fileinput/5.0.3/css/fileinput.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/report/echarts/echarts.min.js",
+    "inputFiles": [
+      "wwwroot/lib/report/echarts/echarts.js",
+      "wwwroot/lib/report/echarts/china.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/report/peity/jquery.peity.min.js",
+    "inputFiles": [
+      "wwwroot/lib/report/peity/jquery.peity.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+
+  {
+    "outputFileName": "wwwroot/lib/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.min.css",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.css",
+      "wwwroot/lib/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput-typeahead.css"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  },
+  {
+    "outputFileName": "wwwroot/lib/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.min.js",
+    "inputFiles": [
+      "wwwroot/lib/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    }
+  }
+]

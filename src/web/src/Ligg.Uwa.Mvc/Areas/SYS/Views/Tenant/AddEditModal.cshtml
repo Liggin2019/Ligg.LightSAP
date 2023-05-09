@@ -1,0 +1,136 @@
+﻿@{ Layout = "~/Views/Shared/_ModalForm.cshtml"; }
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">类型</label>
+            <div id="type" col="Type" class="col-sm-8"></div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">键<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <div>
+                    <input id="Key" col="Key" type="text" class="form-control" />
+                </div>
+                <span><i class="fa fa-info-circle"></i> 只能由英文字母组成，不超过5个字符</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">编码<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <div>
+                    <input id="code" col="Code" type="text" class="form-control" />
+                </div>
+                <span><i class="fa fa-info-circle"></i> 只能由英文字母组成，不超过7个字符</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">短名称<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <div>
+                    <input id="shortName" col="ShortName" type="text" class="form-control" />
+                </div>
+                <span><i class="fa fa-info-circle"></i> 不超过15个字符</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">名称<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input id="name" col="Name" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">排序码</label>
+            <div class="col-sm-8">
+                <input id="sequence" col="Sequence" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">状态</label>
+            <div id="status" col="Status" class="col-sm-8"></div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">描述</label>
+            <div class="col-sm-8">
+                <textarea id="description" col="Description" class="form-control" style="height:68px"></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var id = ys.request("id");
+
+    var act = 'edit';
+    if (id == '' | id == null) act = 'add';
+    $(function () {
+        $("#type").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(TenantType).EnumToDictionaryJson())), default: '@((int)(TenantType.Base))' });
+        $("#status").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(StatusType).EnumToDictionaryJson())), default: '@((int)(StatusType.Enabled))' });
+        $("#isDefault").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(YesOrNo).EnumToDictionaryJson())), default: '@((int)YesOrNo.No)'  });
+        getForm();
+
+        $("#form").validate({
+            rules: {
+                key: { required: true, maxlength: 5 },
+                code: { required: true, maxlength: 7 },
+                shortName: { required: true, maxlength: 15 },
+                name: { required: true,maxlength: 31},
+            }
+        });
+    });
+
+    function getForm() {
+        if (act == 'add') {//add
+            ys.ajax({
+                url: '@Url.Content("~/Sys/Tenant/GetMaxSequenceNoJson")',
+                type: "get",
+                success: function (rst) {
+
+                    var defaultData = {};
+                    defaultData.Sequence = rst.Data;
+                    defaultData.Style = 'default';
+                    $("#form").setWebControls(defaultData);
+                }
+            });
+
+
+        }
+        else {//edit
+            ys.ajax({
+                url: '@Url.Content("~/Sys/Tenant/GetEditDtoJson")' + '?id=' + id,
+                type: "get",
+                success: function (rst) {
+                    if (rst.Flag == 1) {
+                        $("#form").setWebControls(rst.Data);
+                    }
+                    else ys.msgError(rst.Message);
+                }
+            });
+        }
+
+    }
+
+    function saveForm(index) {
+        if (!ys.checkTextLenth("description", "描述", 0, 127)) return;
+
+        if ($("#form").validate().form()) {
+            var postData = $("#form").getWebControls({ Id: id });
+            ys.ajax({
+                url: '@Url.Content("~/Sys/Tenant/")' + act,
+                type: "post",
+                data: postData,
+                success: function (rst) {
+                    if (rst.Flag == 1) {
+                        ys.msgSuccess(rst.Message);
+                        parent.searchGrid();
+                        parent.layer.close(index);
+                    }
+                    else {
+                        ys.msgError(rst.Message);
+                    }
+                }
+            });
+        }
+    }
+</script>
+

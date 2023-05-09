@@ -1,0 +1,132 @@
+﻿@{
+    Layout = "~/Views/Shared/_ModalForm.cshtml";
+    string controller = ViewBag.Controller;
+    string defId = ViewBag.DefaultId;
+}
+
+<div class="wrapper animated fadeInRight">
+    <form id="form" class="form-horizontal m">
+        <div class="form-group">
+            <input id="type" col="Type" type="text" class="hide" />
+            <label class="col-sm-3 control-label ">上级目录</label>
+            <div class="col-sm-8">
+                <div id="parentId" col="ParentId"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">名称<font class="red"> *</font></label>
+            <div class="col-sm-8">
+                <input id="name" col="Name" type="text" class="form-control" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label">排序码</label>
+            <div class="col-sm-8">
+                <input id="sequence" col="Sequence" type="text" class="form-control" />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">状态</label>
+            <div class="col-sm-8" id="status" col="Status"></div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label ">描述</label>
+            <div class="col-sm-8">
+                <textarea id="description" col="Description" class="form-control" style="height:68px"></textarea>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var controller ='@controller';
+    var type = ys.request("type");
+    var id = ys.request("id");
+    var parentId = ys.request("parentId");
+    var id1 = id;
+    var act = 'edit';
+    if (id == '' | id == null) {
+        act = 'add';
+        var id1 = parentId;
+    }
+
+
+    $(function () {
+        $('#parentId').ysComboBoxTree({ url: '@Url.Content("~/Scc/" + controller + "/GetCategoryTreeJsonForSelectParent")' + '?type=' + type +'&id='+id1, async: false });
+        $("#status").ysRadioBox({ data: ys.getJson(@Html.Raw(typeof(StatusType).EnumToDictionaryJson())) });
+        if (parentId == '@defId') {
+            $('#parentId_input').attr('disabled', 'true');
+            if (controller == 'Tag') $("#parentId_input").val("根标签");
+            else $("#parentId_input").val("根目录");
+        }
+
+        getForm();
+
+        $("#form").validate({
+            rules: {
+                name: { required: true, maxlength: 31 },
+                sequence: { digits:true },
+
+            }
+        });
+    });
+
+    function getForm() {
+        if (act =='add')  {//add
+            ys.ajax({
+                url: '@Url.Content("~/Scc/" + controller + "/GetMaxSequenceNoJson")' + '?type=' + type + '&parentId=' + parentId,
+                type: "get",
+                success: function (rst) {
+                    if (rst.Flag == 1) {
+                        var defaultData = {};
+                        defaultData.ParentId = parentId;
+                        defaultData.Status = "@((int)StatusType.Enabled)";
+                        defaultData.Type = type;
+                        defaultData.Sequence = rst.Data;
+                        $("#form").setWebControls(defaultData);
+                    }
+                    else ys.msgError(rst.Message);
+                }
+            });
+        }
+        else {//edit
+             ys.ajax({
+                 url: '@Url.Content("~/Scc/" + controller + "/GetEditDtoJson")' + '?type=' + type + '&id=' + id,
+                type: "get",
+                success: function (rst) {
+                    if (rst.Flag == 1) {
+                        $("#form").setWebControls(rst.Data);
+
+                    }
+                    else ys.msgError(rst.Message);
+                }
+             });
+        }
+    }
+
+    function saveForm(index) {
+        if (!ys.checkTextLenth("description", "描述", 0, 127)) return;
+
+        if ($("#form").validate().form()) {
+            var postData = $("#form").getWebControls({ Id: id });
+            postData.ParentId = ys.getLastValue(postData.ParentId);
+            ys.ajax({
+                url: '@Url.Content("~/Scc/" + controller + "/")' + act,
+                type: "post",
+                data: postData,
+                success: function (rst) {
+                    if (rst.Flag == 1) {
+                        ys.msgSuccess(rst.Message);;
+                        parent.searchTreeGrid(postData.ParentId);
+                        parent.layer.close(index);
+                    }
+                    else ys.msgError(rst.Message);
+                }
+            });
+        }
+    }
+
+
+</script>
