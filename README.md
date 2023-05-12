@@ -9,7 +9,7 @@ Ligg.LightSap(Lightweight System Applications and Products in Data Processing)�
 - PRD&HRM模块的ERP和OA门户只是示例， 用来验证框架和演示权限体系
 
 ## 特点
-#### 采用原创的文本编程技术实现定制化和无码化, 详见[《Ligg.EasyRPADesk说明》](https://gitee.com/liggin2019/Ligg.EasyRpaDesk)
+#### 采用原创的文本编程技术实现定制化和无码化, 详见[《Ligg.EasyRPADesk说明》](https://github.com/liggin2019/Ligg.EasyRpaDesk)
 #### 应用配置和策略，从业务层面支撑可扩展的切面式(AOP)编程，满足需求的个性化、多样化、应对需求的可伸缩性、多变性、不确定性
 > - 配置包括: 租户配置、开发配置、运维配置、定制配置、个人配置、业务配置, 业务配置包括制造业7个业务模块(协作、人力、财务、研发、生产、销售、质量)的配置点
 > - 策略包括: ActionLog策略、EntryLog策略、AuditLog策略、Cors策略(可以通过配置扩展)
@@ -90,11 +90,11 @@ net core 3.1(可以快速扩展到Net 5/6/7)、Mvc、WebAPI、EF core、FreeSql�
 > -  打开菜单"行政人事-考勤管理" 进入主界面，点击![structure](https://liggin2019.github.io/static/images/lrd/lrd-icon-calc.png)跳转到控制台程序
 > -  以界面所示的账号密码登录
 > -  运行其他的启动程序， 在各个z-started文件夹取出.exe和.ini文件至当前位置，双击运行
-> -  ***注意***: 在WepApi服务重启后，一定要记得切换用户： 点击工具栏![structure](https://gitee.com/liggin2019/static/raw/master/docs/images/lrd/lrd-icon-switch-user.png)右侧按钮切换用户，再点刷新(左侧)
+> -  ***注意***: 在WepApi服务重启后，一定要记得切换用户： 点击工具栏![structure](https://github.com/liggin2019/static/raw/master/docs/images/lrd/lrd-icon-switch-user.png)右侧按钮切换用户，再点刷新(左侧)
 ##### 启动程序位置
 ![structure](https://liggin2019.github.io/static/images/lrd/lrd-starter-loc.png)
 
-##### Lrd客户端的无码化编程和代码调试，见[《Ligg.EasyRPADesk说明》](https://www.gitee.com/Liggin2019/Ligg.EasyRPADesk) [《Ligg.EasyRPADesk文档》](https://liggin2019.github.io/docs/)
+##### Lrd客户端的无码化编程和代码调试，见[《Ligg.EasyRPADesk说明》](https://www.github.com/Liggin2019/Ligg.EasyRPADesk) [《Ligg.EasyRPADesk文档》](https://liggin2019.github.io/docs/)
 
 
 ## 项目结构 
@@ -105,7 +105,7 @@ net core 3.1(可以快速扩展到Net 5/6/7)、Mvc、WebAPI、EF core、FreeSql�
 #### MvcAdmin客户端-系统管理</br>
 ![structure](https://liggin2019.github.io/static/images/uwa/uwa-mvc-admin-sys.png)
 #### MvcAdmin客户端-内容管理</br>
-![structure](https://gitee.com/liggin2019/static/raw/master/docs/images/uwa/uwa-mvc-admin-cms.png)
+![structure](https://github.com/liggin2019/static/raw/master/docs/images/uwa/uwa-mvc-admin-cms.png)
 ####  MvcSite客户端(无码化客户端)-销售内联网-PC端</br>
 ![structure](https://liggin2019.github.io/static/images/uwa/uwa-mvc-site.png)
 ####   MvcSite客户端(无码化客户端)-销售内联网-手机端</br>
