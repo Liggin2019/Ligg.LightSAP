@@ -105,7 +105,7 @@ net core 3.1(可以快速扩展到Net 5/6/7)、Mvc、WebAPI、EF core、FreeSql�
 #### MvcAdmin客户端-系统管理</br>
 ![structure](https://liggin2019.github.io/static/images/uwa/uwa-mvc-admin-sys.png)
 #### MvcAdmin客户端-内容管理</br>
-![structure](https://github.com/liggin2019/static/raw/master/docs/images/uwa/uwa-mvc-admin-cms.png)
+![structure](https://liggin2019.github.io/static/images/uwa/uwa-mvc-admin-cms.png)
 ####  MvcSite客户端(无码化客户端)-销售内联网-PC端</br>
 ![structure](https://liggin2019.github.io/static/images/uwa/uwa-mvc-site.png)
 ####   MvcSite客户端(无码化客户端)-销售内联网-手机端</br>
